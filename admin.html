@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div style="padding:120px 20px;">
+
+<h1>Admin Panel</h1>
+
+<h3>All Orders</h3>
+
+{% for order in orders %}
+
+<div style="
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+">
+
+<p><b>Customer:</b> {{ order[1] }}</p>
+<p><b>Phone:</b> {{ order[2] }}</p>
+<p><b>Address:</b> {{ order[3] }}</p>
+<p><b>Total:</b> ₹{{ order[4] }}</p>
+<p><b>Payment:</b> {{ order[5] }}</p>
+
+</div>
+
+<a href="/admin/invoice/{{ order.id }}">
+    🧾 Print Bill
+</a>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="payment-container">
+
+    <h1>💳 Payment Page</h1>
+
+    <div class="address-box">
+
+        <h3>Delivery Address</h3>
+
+        <p><b>Name:</b> {{ user[0] }}</p>
+        <p><b>Phone:</b> {{ user[1] }}</p>
+        <p><b>Address:</b> {{ user[2] }}</p>
+        <p><b>City:</b> {{ user[3] }}</p>
+        <p><b>State:</b> {{ user[4] }}</p>
+        <p><b>Pincode:</b> {{ user[5] }}</p>
+
+    </div>
+
+    <div class="order-summary">
+
+    <h3>Order Summary</h3>
+
+     <p>
+        Items Total :
+        <b>₹{{ total }}</b>
+    </p>
+
+    <p>
+        Delivery Charge :
+        {% if free_delivery %}
+            <span style="color:green;font-weight:bold;">
+                FREE 🎉
+            </span>
+        {% else %}
+            ₹{{ delivery_charge }}
+        {% endif %}
+    </p>
+
+    <hr>
+
+    <h1>
+        Total Payable :
+        ₹{{ grand_total }}
+    </h1>
+
+</div>
+
+    <form action="/place_order" method="POST">
+
+
+        <div class="payment-option">
+
+            <h3>Payment Methods</h3>
+
+        <p style="color:red;">
+            Cash On Delivery Unavailable
+        </p>
+
+<!-- PHONEPE -->
+
+<div class="payment-option">
+
+<input type="radio"
+       name="payment_method"
+       value="PhonePe"
+       onclick="showPayment('phonepe')">
+
+📱 PhonePe
+
+</div>
+
+<div id="phonepe-box" class="pay-box">
+    <div class="upi-buttons">
+
+<button type="button"
+        class="qr-btn"
+        onclick="showPhonePeQR()">
+    📷 Scan By QR Code
+</button>
+
+<button type="button"
+        class="upi-btn"
+        onclick="openPhonePe()">
+    📱 Pay By UPI App
+</button>
+</div>
+
+<div id="phonepe-qr" style="display:none;">
+
+    <br>
+
+    <img src="{{ url_for('static',
+    filename='qr/phonepe_qr.jpeg') }}"
+    width="250">
+
+    <p>
+        Amount : ₹{{ grand_total }}
+    </p>
+
+</div>
+
+</div>
+
+<!-- GOOGLE PAY -->
+
+<div class="payment-option">
+
+<input type="radio"
+       name="payment_method"
+       value="Google Pay"
+       onclick="showPayment('gpay')">
+
+💰 Google Pay
+
+</div>
+
+<div id="gpay-box" class="pay-box">
+    <div class="upi-buttons">
+
+<button type="button"
+        class="qr-btn"
+        onclick="showGPayQR()">
+    📷 Scan By QR Code
+</button>
+
+<button type="button"
+        class="upi-btn"
+        onclick="openGPay()">
+    📱 Pay By UPI Apps
+</button>
+</div>
+
+<div id="gpay-qr" style="display:none;">
+
+    <br>
+
+    <img src="{{ url_for('static',
+    filename='qr/gpay_qr.jpeg') }}"
+    width="250">
+
+    <p>
+        Amount : ₹{{ grand_total }}
+    </p>
+
+</div>
+
+</div>
+
+<!-- PAYTM -->
+
+<div class="payment-option">
+
+<input type="radio"
+       name="payment_method"
+       value="Paytm"
+       onclick="showPayment('paytm')">
+
+🏦 Paytm
+
+</div>
+
+<div id="paytm-box" class="pay-box">
+    <div class="upi-buttons">
+
+<button type="button"
+        class="qr-btn"
+        onclick="showPaytmQR()">
+    📷 Scan By QR Code
+</button>
+
+<button type="button"
+        class="upi-btn"
+        onclick="openPaytm()">
+    📱 Pay By UPI App
+</button>
+</div>
+
+<div id="paytm-qr" style="display:none;">
+
+    <br>
+
+    <img src="{{ url_for('static',
+    filename='qr/paytm_qr.jpeg') }}"
+    width="250">
+
+    <p>
+        Amount : ₹{{ grand_total }}
+    </p>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="payment-option">
+
+<input type="radio"
+       name="payment_method"
+       value="Card"
+       onclick="showPayment('card')">
+
+💳 Credit / Debit Card
+
+</div>
+
+<div id="card-box" class="pay-box">
+
+<input type="text"
+       placeholder="Card Number">
+
+<input type="text"
+       placeholder="Card Holder Name">
+
+<input type="text"
+       placeholder="MM/YY">
+
+<input type="password"
+       placeholder="CVV">
+
+</div>
+
+<button type="submit"
+     class="place-order-btn">
+Place Order </button>
+
+
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+
+function showPayment(){
+
+    let phonepeBox = document.getElementById("phonepe-box");
+    let gpayBox = document.getElementById("gpay-box");
+    let paytmBox = document.getElementById("paytm-box");
+    let cardBox = document.getElementById("card-box");
+
+    if(phonepeBox){
+        phonepeBox.style.display = "none";
+    }
+
+    if(gpayBox){
+        gpayBox.style.display = "none";
+    }
+
+    if(paytmBox){
+        paytmBox.style.display = "none";
+    }
+
+    if(cardBox){
+        cardBox.style.display = "none";
+    }
+
+    let selected =
+    document.querySelector(
+    'input[name="payment_method"]:checked'
+    );
+
+    if(!selected){
+        return;
+    }
+
+    let method = selected.value;
+
+    if(method === "PhonePe" && phonepeBox){
+        phonepeBox.style.display = "block";
+    }
+
+    if(method === "Google Pay" && gpayBox){
+        gpayBox.style.display = "block";
+    }
+
+    if(method === "Paytm" && paytmBox){
+        paytmBox.style.display = "block";
+    }
+
+    if(method === "Card" && cardBox){
+        cardBox.style.display = "block";
+    }
+}
+
+
+function showPhonePeQR(){
+
+    let qr = document.getElementById("phonepe-qr");
+
+    if(qr){
+        qr.style.display = "block";
+    }
+}
+
+
+function showGPayQR(){
+
+    let qr = document.getElementById("gpay-qr");
+
+    if(qr){
+        qr.style.display = "block";
+    }
+}
+
+
+function showPaytmQR(){
+
+    let qr = document.getElementById("paytm-qr");
+
+    if(qr){
+        qr.style.display = "block";
+    }
+}
+
+</script>
+
+{% endblock %}

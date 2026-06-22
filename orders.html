@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<div class="admin-container">
+
+    <h1>📦 Orders Management</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Order Time</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for order in orders %}
+
+        <tr>
+
+            <td>{{ order[0] }}</td>
+
+            <td>{{ order[7] }}</td>
+
+            <td>{{ order[6] }}</td>
+
+            <td>
+                <img src="{{ url_for('static', filename='uploads/' + order[12]) }}"
+                     width="70">
+                <br>
+                {{ order[11] }}
+            </td>
+
+            <td>₹{{ order[2] }}</td>
+
+            <td>
+                {{ order[8] }}
+                <br>
+                <b>{{ order[9] }}</b>
+            </td>
+
+            <td>
+
+                {% if order[3] == 'Placed' %}
+                    <span class="placed">Placed</span>
+
+                {% elif order[3] == 'Shipped' %}
+                    <span class="shipped">Shipped</span>
+
+                {% elif order[3] == 'Delivered' %}
+                    <span class="delivered">Delivered</span>
+
+                {% endif %}
+
+            </td>
+
+            <td>{{ order[10] }}</td>
+
+            <td>
+
+                <form action="/update_order_status/{{ order[0] }}" method="POST">
+
+<select name="status">
+
+    <option value="Placed"
+    {% if order[3]=='Placed' %}selected{% endif %}>
+    Placed
+    </option>
+
+    <option value="Shipped"
+    {% if order[3]=='Shipped' %}selected{% endif %}>
+    Shipped
+    </option>
+
+    <option value="Delivered"
+    {% if order[3]=='Delivered' %}selected{% endif %}>
+    Delivered
+    </option>
+
+    <option value="Cancelled"
+    {% if order[3]=='Cancelled' %}selected{% endif %}>
+    Cancelled
+    </option>
+
+</select>
+
+<button type="submit">
+Update
+</button>
+
+</form>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>
