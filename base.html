@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Grandma's Recipes</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static',
+          filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="menu-btn"
+         onclick="openMenu()">
+        ☰
+    </div>
+
+    <div class="logo-center">
+
+        <img src="{{ url_for('static',
+        filename='images/logo.jpeg') }}">
+
+        <div>
+
+            <h3>Grandma's Recipes</h3>
+
+            <p>Traditional Snacks</p>
+
+        </div>
+
+    </div>
+
+    {% if 'user_id' in session %}
+
+    <a href="/cart" class="cart-btn">
+        🛒
+    </a>
+
+    {% endif %}
+
+</header>
+
+<!-- ================= SIDEBAR ================= -->
+
+<div id="sidebar" class="sidebar">
+
+    <div class="sidebar-header">
+
+        <button class="close-btn"
+                onclick="closeMenu()">
+            ×
+        </button>
+
+        <img src="{{ url_for('static',
+        filename='images/logo.jpeg') }}">
+
+        <h2>Grandma's Recipes</h2>
+
+    </div>
+
+    <div class="sidebar-menu">
+
+        <a href="/home"
+           class="{% if request.path == '/home' %}active{% endif %}">
+            🏠 Home
+        </a>
+
+        {% if 'user_id' not in session %}
+
+        <a href="/login"
+           class="{% if request.path == '/login' %}active{% endif %}">
+            🔐 Login
+        </a>
+
+        <a href="/register"
+           class="{% if request.path == '/register' %}active{% endif %}">
+            📝 Register
+        </a>
+
+        {% endif %}
+
+        {% if 'user_id' in session %}
+
+        <a href="/profile"
+           class="{% if request.path == '/profile' %}active{% endif %}">
+            👤 My Profile
+        </a>
+
+        <a href="/orders"
+           class="{% if request.path == '/orders' %}active{% endif %}">
+            📦 My Orders
+        </a>
+
+        <a href="/logout">
+            🚪 Logout
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- ================= USER NAME ================= -->
+
+{% if 'user_name' in session %}
+
+<div class="user-welcome">
+👋 Welcome, {{ session['user_name'] }}
+</div>
+
+{% endif %}
+
+<!-- ================= MAIN ================= -->
+
+<main>
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+function openMenu(){
+
+    document
+    .getElementById("sidebar")
+    .classList
+    .add("active");
+
+}
+
+function closeMenu(){
+
+    document
+    .getElementById("sidebar")
+    .classList
+    .remove("active");
+
+}
+
+</script>
+
+</body>
+</html>

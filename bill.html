@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Invoice</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static',
+filename='css/admin.css') }}">
+
+</head>
+<body>
+
+<div class="invoice">
+
+<h1>Grandma's Recipe</h1>
+
+<h2>Order Invoice</h2>
+
+<hr>
+
+<p><b>Order ID:</b> {{ order[0] }}</p>
+
+<p><b>Customer:</b> {{ order[1] }}</p>
+
+<p><b>Phone:</b> {{ order[2] }}</p>
+
+<p><b>Address:</b> {{ order[3] }}</p>
+
+<p><b>Payment:</b> {{ order[5] }}</p>
+
+<p><b>Status:</b> {{ order[6] }}</p>
+
+<p><b>Date:</b> {{ order[7] }}</p>
+
+<hr>
+
+<table class="invoice-table">
+
+<tr>
+<th>Product</th>
+<th>Qty</th>
+<th>Price</th>
+</tr>
+
+{% for item in items %}
+
+<tr>
+
+<td>{{ item[0] }}</td>
+
+<td>{{ item[1] }}</td>
+
+<td>₹{{ item[2] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<h2 class="total">
+
+Total : ₹{{ order[4] }}
+
+</h2>
+
+<button onclick="window.print()"
+class="print-btn">
+
+🖨 Print Invoice
+
+</button>
+
+</div>
+
+</body>
+</html>

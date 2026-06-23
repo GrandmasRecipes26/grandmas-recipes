@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Users</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static',
+filename='css/admin.css') }}">
+
+</head>
+<body>
+
+<div class="admin-navbar">
+
+<h2>Registered Users</h2>
+
+<a href="/admin/dashboard">
+Dashboard
+</a>
+
+</div>
+
+<div class="admin-container">
+
+<h1 class="admin-page-title">
+All Customers
+</h1>
+
+<table class="orders-table">
+
+<tr>
+
+<th>ID</th>
+<th>Profile</th>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>City</th>
+<th>State</th>
+
+</tr>
+
+{% for user in users %}
+
+<tr>
+
+<td>{{ user[0] }}</td>
+
+<td>
+
+{% if user[10] %}
+
+<img
+src="{{ user[10] }}"
+class="product-img">
+
+{% else %}
+
+No Image
+
+{% endif %}
+
+</td>
+
+<td>{{ user[1] }}</td>
+
+<td>{{ user[2] }}</td>
+
+<td>{{ user[3] }}</td>
+
+<td>{{ user[6] }}</td>
+
+<td>{{ user[7] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</body>
+</html>

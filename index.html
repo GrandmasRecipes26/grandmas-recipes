@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- BACKGROUND -->
+<div class="bg-rotator">
+
+    <img src="/static/images/jantikulu.jpeg">
+    <img src="/static/images/chekkalu.jpeg">
+    <img src="/static/images/gavvalu.jpeg">
+    <img src="/static/images/karapusa.jpeg">
+    <img src="/static/images/dry_fruit_ariselu.jpeg">
+    <img src="/static/images/sunnundalu.jpeg">
+
+
+</div>
+
+<!-- MAIN BANNER -->
+<div class="main-banner">
+
+    <h1>Grandma's Recipes</h1>
+
+    <h3>Traditional Homemade Snacks</h3>
+
+    <p>Fresh • Tasty • Grandma Made</p>
+
+</div>
+
+<!-- MOVING STRIP -->
+<div class="moving-strip">
+    <div class="track">
+
+        <img src="/static/images/jantikulu.jpeg">
+        <img src="/static/images/chekkalu.jpeg">
+        <img src="/static/images/gavvalu.jpeg">
+        <img src="/static/images/karapusa.jpeg">
+        <img src="/static/images/dry_fruit_ariselu.jpeg">
+        <img src="/static/images/sunnundalu.jpeg">
+        <img src="/static/images/kajjikayalu.jpeg">
+        <img src="/static/images/rava_laddu.jpeg">
+
+
+
+        <img src="/static/images/jantikulu.jpeg">
+        <img src="/static/images/chekkalu.jpeg">
+        <img src="/static/images/gavvalu.jpeg">
+        <img src="/static/images/karapusa.jpeg">
+        <img src="/static/images/dry_fruit_ariselu.jpeg">
+        <img src="/static/images/sunnundalu.jpeg">
+        <img src="/static/images/kajjikayalu.jpeg">
+        <img src="/static/images/rava_laddu.jpeg">
+
+
+
+    </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+
+    <h2 class="special-title">
+        🌟 OUR SPECIALS 🌟
+    </h2>
+
+    <!-- FILTERS -->
+    <div class="filters">
+
+        <a href="/home" class="filter-btn">
+            All
+        </a>
+
+        <a href="/home?category=Hot Items"
+           class="filter-btn">
+            Hot Items
+        </a>
+
+        <a href="/home?category=Sweets"
+           class="filter-btn">
+            Sweets
+        </a>
+
+        <a href="/home?category=Signature Items"
+           class="filter-btn">
+            Signature Items
+        </a>
+
+    </div>
+
+    <div class="products">
+
+        {% for p in products %}
+
+        <div class="card">
+
+            <!-- WISHLIST -->
+            <div class="wishlist-btn">
+
+                <a href="/toggle_wishlist/{{ p[0] }}#products">
+
+                    {% if p[0] in wishlist_ids %}
+                        ❤️
+                    {% else %}
+                        🤍
+                    {% endif %}
+
+                </a>
+
+            </div>
+
+            <!-- PRODUCT IMAGE -->
+            <img src="/static/images/{{ p[3] }}"
+                 alt="{{ p[1] }}">
+
+            <!-- PRODUCT NAME -->
+            <h3>{{ p[1] }}</h3>
+
+            <!-- DESCRIPTION -->
+            <p>{{ p[2] }}</p>
+
+            <!-- FORM -->
+            <form method="POST">
+
+                <input type="hidden"
+                       name="product_id"
+                       value="{{ p[0] }}">
+
+                <!-- WEIGHT -->
+                <select name="variant_id" required>
+
+                    <option value="">
+                        Select Weight
+                    </option>
+
+                    {% for v in variants %}
+
+                        {% if v[1] == p[0] %}
+
+                        <option value="{{ v[0] }}">
+                            {{ v[2] }} - ₹{{ v[3] }}
+                        </option>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </select>
+
+                <!-- QUANTITY -->
+                <input type="number"
+                       name="quantity"
+                       value="1"
+                       min="1"
+                       required>
+
+                <!-- ADD TO CART -->
+                <button type="submit"
+                        formaction="/add_to_cart"
+                        formmethod="POST"
+                        class="product-cart-btn">
+
+                    🛒 Add To Cart
+
+                </button>
+
+                <!-- BUY NOW -->
+                <button type="submit"
+                        formaction="/buy_now"
+                        formmethod="POST"
+                        class="product-buy-btn">
+
+                    ⚡ Buy Now
+
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

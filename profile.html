@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+<div class="profile-container">
+
+    <div class="profile-card">
+
+        {% if user[10] %}
+
+        <img src="{{ url_for('static',
+        filename='uploads/' + user[10]) }}"
+        class="profile-img">
+
+        {% else %}
+
+        <img src="{{ url_for('static',
+        filename='images/default-user.png') }}"
+        class="profile-img">
+
+        {% endif %}
+
+        <h2 class="profile-name">
+            {{ user[1] }}
+        </h2>
+
+        <p class="profile-email">
+            📧 {{ user[2] }}
+        </p>
+
+        <p class="profile-phone">
+            📞 {{ user[3] }}
+        </p>
+
+        <div class="action-buttons">
+
+            <!-- Upload Photo -->
+            <form id="uploadForm"
+                  action="/upload_profile"
+                  method="POST"
+                  enctype="multipart/form-data">
+
+                <input type="file"
+                       id="profileImage"
+                       name="profile_image"
+                       hidden>
+
+                <label for="profileImage"
+                       class="upload-btn">
+                    📷 Upload Photo
+                </label>
+
+            </form>
+
+            <!-- Remove Photo -->
+            <form action="/remove_profile_photo"
+                  method="POST">
+
+                <button type="submit"
+                        class="remove-btn">
+                    🗑 Remove Photo
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Address -->
+    <a href="/addresses" class="profile-box">
+    📍 My Address
+     </a>
+    <!-- Favorites -->
+    <a href="/favorites" class="profile-box">
+        ❤️ Favorite Items
+    </a>
+
+</div>
+
+<script>
+document
+.getElementById("profileImage")
+.addEventListener("change", function(){
+
+    if(this.files.length > 0){
+        document
+        .getElementById("uploadForm")
+        .submit();
+    }
+
+});
+</script>
+
+{% endblock %}

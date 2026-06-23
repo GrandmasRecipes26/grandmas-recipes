@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="favorites-page">
+
+    <h1 class="special-title">❤️ My Favorites</h1>
+
+    {% if products|length == 0 %}
+        <p class="no-fav">No Favorite Items</p>
+    {% else %}
+
+    <div class="products">
+
+        {% for p in products %}
+
+        <div class="card">
+
+            <!-- Wishlist -->
+            <div class="wishlist-btn">
+                <a href="/toggle_wishlist/{{ p[0] }}">
+                    ❤️
+                </a>
+            </div>
+
+            <!-- Product Image -->
+            <img src="/static/images/{{ p[3] }}"
+                 alt="{{ p[1] }}">
+
+             <div class="card-body">
+
+            <!-- Product Name -->
+            <h3>{{ p[1] }}</h3>
+
+            <!-- Description -->
+            <p>{{ p[2] }}</p>
+
+        </div>
+
+            <!-- Form -->
+            <form method="POST">
+
+                <input type="hidden"
+                       name="product_id"
+                       value="{{ p[0] }}">
+
+                <!-- Weight -->
+                <select name="variant_id" required>
+                    <option value="">Select Weight</option>
+
+                    {% for v in variants %}
+                        {% if v[1] == p[0] %}
+                        <option value="{{ v[0] }}">
+                            {{ v[2] }} - ₹{{ v[3] }}
+                        </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <!-- Quantity -->
+                <input type="number"
+                       name="quantity"
+                       value="1"
+                       min="1"
+                       required>
+
+                <!-- Add to Cart -->
+                <button type="submit"
+                        formaction="/add_to_cart"
+                        class="product-cart-btn">
+                    🛒 Add To Cart
+                </button>
+
+                <!-- Buy Now -->
+                <button type="submit"
+                        formaction="/buy_now"
+                        class="product-buy-btn">
+                    ⚡ Buy Now
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
