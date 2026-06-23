@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Splash</title>
+
+<style>
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+background:linear-gradient(135deg,#fff8f0,#ffe8cc);
+overflow:hidden;
+font-family:Arial;
+}
+
+/* FLOATING ICONS */
+.floating{
+position:absolute;
+font-size:30px;
+opacity:0.15;
+animation:float 8s linear infinite;
+}
+
+.f1{left:10%; animation-delay:0s;}
+.f2{left:25%; animation-delay:2s;}
+.f3{left:45%; animation-delay:4s;}
+.f4{left:65%; animation-delay:1s;}
+.f5{left:80%; animation-delay:3s;}
+
+@keyframes float{
+from{transform:translateY(100vh);}
+to{transform:translateY(-100px);}
+}
+
+/* CENTER CONTAINER */
+.container{
+text-align:center;
+position:relative;
+}
+
+/* LOGO FIX (IMPORTANT) */
+.logo{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+animation:spin 6s linear infinite;
+box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
+
+@keyframes spin{
+from{transform:rotate(0deg);}
+to{transform:rotate(360deg);}
+}
+
+h1{
+color:#D35400;
+margin-top:20px;
+font-size:40px;
+}
+
+p{
+color:#666;
+margin-top:10px;
+}
+
+/* LOADING DOTS */
+.loader{
+margin-top:20px;
+}
+
+.loader span{
+width:8px;
+height:8px;
+background:#D35400;
+display:inline-block;
+margin:0 3px;
+border-radius:50%;
+animation:blink 1s infinite;
+}
+
+.loader span:nth-child(2){animation-delay:0.2s;}
+.loader span:nth-child(3){animation-delay:0.4s;}
+
+@keyframes blink{
+0%,100%{opacity:0.2;}
+50%{opacity:1;}
+}
+
+</style>
+
+<script>
+setTimeout(function(){
+window.location.href="/home";
+},3000);
+</script>
+
+</head>
+
+<body>
+
+<!-- FLOATING ICONS -->
+<div class="floating f1">🍘</div>
+<div class="floating f2">🥜</div>
+<div class="floating f3">🍪</div>
+<div class="floating f4">🍯</div>
+<div class="floating f5">🥟</div>
+
+<div class="container">
+
+<img src="{{ url_for('static', filename='images/logo.jpeg') }}"
+     class="logo">
+
+<h1>Grandma's Recipes</h1>
+<p>Traditional Homemade Food</p>
+
+<div class="loader">
+<span></span><span></span><span></span>
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<link rel="stylesheet"
+          href="{{ url_for('static',
+          filename='css/style.css') }}">
+
+          <div class="address-card">
+
+    <h2>📍 My Address</h2>
+
+    {% if user[5] and request.args.get('edit') != '1' %}
+
+        <!-- Saved Address View -->
+        <div class="saved-address">
+            <p><b>Address:</b> {{ user[5] }}</p>
+            <p><b>City:</b> {{ user[6] }}</p>
+            <p><b>State:</b> {{ user[7] }}</p>
+            <p><b>Pincode:</b> {{ user[8] }}</p>
+            <p><b>Phone:</b> {{ user[3] }}</p>
+        </div>
+
+        <a href="/addresses?edit=1" class="edit-btn">
+            Edit Address
+        </a>
+
+    {% else %}
+
+        <!-- Edit / First Save Form -->
+        <form action="/save_address" method="POST">
+
+            <input type="text" name="address"
+                   value="{{ user[5] or '' }}"
+                   placeholder="Address">
+
+            <input type="text" name="city"
+                   value="{{ user[6] or '' }}"
+                   placeholder="City">
+
+            <input type="text" name="state"
+                   value="{{ user[7] or '' }}"
+                   placeholder="State">
+
+            <input type="text" name="pincode"
+                   value="{{ user[8] or '' }}"
+                   placeholder="Pincode">
+
+            <input type="text" name="phone"
+                   value="{{ user[3] }}"
+                   placeholder="Phone">
+
+            <button type="submit">Save Address</button>
+
+        </form>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

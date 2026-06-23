@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="orders-page">
+
+    <h2>📦 My Orders</h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success-msg">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if orders %}
+
+        {% for order in orders %}
+
+        <div class="order-card">
+
+            <div class="order-top">
+
+                <img src="{{ url_for('static',
+filename='images/' + (order[12] or 'no-image.jpg')) }}"
+class="order-img">
+
+                <div classs="order-info">
+
+                    <h3>{{ order[11] }}</h3>
+
+                    <p>
+                    <b>Price:</b>
+                    ₹{{ order[13] }}
+                    </p>
+
+                    <p>
+                    <b>Total:</b>
+                    ₹{{ order[2] }}
+                    </p>
+
+                    <p>
+                        <b>Payment:</b>
+                        {{ order[8] }}
+                    </p>
+
+                    <p>
+                    <b>Quantity:</b>
+                    {{ order[15] }}
+                    </p>
+
+                    <p>
+                        <b>Order Date:</b>
+                        {{ order[10] }}
+                    </p>
+
+                    <p>
+<b>Delivery:</b>
+₹{{ order[14] }}
+</p>
+
+                    <p>
+                        <b>Status:</b>
+
+                        {% if order[3] == 'Placed' %}
+                            <span class="placed">Placed</span>
+
+                        {% elif order[3] == 'Shipped' %}
+                            <span class="shipped">Shipped</span>
+
+                        {% elif order[3] == 'Delivered' %}
+                            <span class="delivered">Delivered</span>
+
+                        {% elif order[3] == 'Cancelled' %}
+                            <span class="cancelled">Cancelled</span>
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% if order[3] != 'Cancelled' %}
+
+            <div class="tracker">
+
+                <div class="step
+                {% if order[3]=='Placed' or order[3]=='Shipped' or order[3]=='Delivered' %}
+                active
+                {% endif %}
+                ">
+                    ✔ Placed
+                </div>
+
+                <div class="line"></div>
+
+                <div class="step
+                {% if order[3]=='Shipped' or order[3]=='Delivered' %}
+                active
+                {% endif %}
+                ">
+                    🚚 Shipped
+                </div>
+
+                <div class="line"></div>
+
+                <div class="step
+                {% if order[3]=='Delivered' %}
+                active
+                {% endif %}
+                ">
+                    📦 Delivered
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            <div class="order-actions">
+
+                {% if order[3] == 'Placed' %}
+
+                <form action="/cancel_order/{{ order[0] }}" method="POST">
+
+                    <button type="submit" class="cancel-btn">
+                        ❌ Cancel Order
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+                <a href="/" class="continue-shopping">
+                    🛒 Continue Shopping
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+    <div class="empty-orders">
+
+        <h3>No Orders Found</h3>
+
+        <p>
+            You haven't placed any orders yet.
+        </p>
+
+        <a href="/" class="continue-shopping">
+            🛒 Continue Shopping
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+.product-form{
+    max-width:700px;
+    margin:30px auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.product-form input,
+.product-form textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.variant-row{
+    display:flex;
+    gap:15px;
+    margin-bottom:10px;
+}
+
+.variant-row input{
+    flex:1;
+}
+
+.save-btn{
+    background:#d65a00;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.save-btn:hover{
+    background:#b84d00;
+}
+
+</style>
+
+<div class="product-form">
+
+    <h2>Add Product</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <input type="text"
+               name="name"
+               placeholder="Product Name"
+               required>
+
+        <br><br>
+
+        <textarea
+            name="description"
+            placeholder="Description"
+            required>
+        </textarea>
+
+        <br><br>
+
+        <input type="text"
+               name="category"
+               placeholder="Category"
+               required>
+
+        <br><br>
+
+        <input type="file"
+               name="image"
+               required>
+
+        <hr>
+
+        <h3>Product Variants</h3>
+
+        <div>
+
+            Weight:
+            <input type="text"
+                   name="weight[]"
+                   placeholder="250g"
+                   required>
+
+            Price:
+            <input type="number"
+                   name="price[]"
+                   placeholder="150"
+                   required>
+
+        </div>
+
+        <br>
+
+        <div>
+
+            Weight:
+            <input type="text"
+                   name="weight[]"
+                   placeholder="500g"
+                   required>
+
+            Price:
+            <input type="number"
+                   name="price[]"
+                   placeholder="250"
+                   required>
+
+        </div>
+
+        <br>
+
+        <div>
+
+            Weight:
+            <input type="text"
+                   name="weight[]"
+                   placeholder="1kg"
+                   required>
+
+            Price:
+            <input type="number"
+                   name="price[]"
+                   placeholder="500"
+                   required>
+
+        </div>
+
+        <br>
+
+        <button type="submit">
+            Add Product
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
