@@ -721,6 +721,10 @@ def place_order():
         return redirect('/login')
 
     payment_method = request.form.get('payment_method')
+
+    if not payment_method:
+        flash("Please Select Payment Method")
+        return redirect('/payments')
     
     cur = mysql.connection.cursor()
 
