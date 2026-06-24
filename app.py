@@ -79,7 +79,7 @@ def home():
 
     variants = cur.fetchall()
 
-    # Wishlist
+    # Wishlist 
     wishlist_ids = []
 
     if 'user_id' in session:
@@ -715,7 +715,7 @@ def place_order():
         return redirect('/login')
 
     payment_method = request.form.get('payment_method')
-
+    
     cur = mysql.connection.cursor()
 
     # USER DETAILS

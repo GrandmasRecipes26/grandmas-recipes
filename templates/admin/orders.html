@@ -65,13 +65,18 @@
 
                 {% endif %}
 
+                {% elif order[3] == 'Cancelled' %}
+                <span style="color:red;font-weight:bold;">
+                Cancelled
+                </span>
+
             </td>
 
             <td>{{ order[10] }}</td>
 
             <td>
 
-                <form action="/update_order_status/{{ order[0] }}" method="POST">
+                <form action="/admin/update_order/{{ order[0] }}" method="POST">
 
 <select name="status">
 
