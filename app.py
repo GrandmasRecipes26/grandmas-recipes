@@ -9,6 +9,7 @@ from flask_mail import Mail, Message
 
 app = Flask(__name__)
 app.secret_key = "grandmasrecipes"
+app.config['SESSION_PERMANENT'] = True
 
 
 app.config['MYSQL_HOST'] = 'mainline.proxy.rlwy.net'
@@ -155,6 +156,7 @@ def login():
 
         if user:
 
+            session.permanent = True
             session['user_id'] = user[0]
             session['user_name'] = user[1]
 
