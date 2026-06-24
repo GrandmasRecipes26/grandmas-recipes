@@ -14,8 +14,8 @@ app.secret_key = "grandmasrecipes"
 app.config['MYSQL_HOST'] = 'mainline.proxy.rlwy.net'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'tqMSxumfFaZLERMWgQUjRdlziQQmuyrK'
-app.config['MYSQLPORT'] = 26574
-app.config['MYSQL_DB'] = 'grandmas-recipes'
+app.config['MYSQL_PORT'] = 26574
+app.config['MYSQL_DB'] = 'grandmas_recipes'
 
 # PROFILE IMAGE UPLOAD
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
