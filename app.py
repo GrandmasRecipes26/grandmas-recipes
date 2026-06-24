@@ -651,6 +651,11 @@ def payment():
 
     user = cur.fetchone()
 
+    address_missing = False
+    
+    if not user[2] or not user[3] or not user[5]:
+        address_missing = True
+
     # BUY NOW
     if session.get('buy_now'):
 
@@ -698,13 +703,14 @@ def payment():
     cur.close()
 
     return render_template(
-        "payment.html",
-        user=user,
-        total=total,
-        delivery_charge=delivery_charge,
-        grand_total=grand_total,
-        free_delivery=free_delivery
-    )
+    "payment.html",
+    user=user,
+    total=total,
+    delivery_charge=delivery_charge,
+    grand_total=grand_total,
+    free_delivery=free_delivery,
+    address_missing=address_missing
+)
 
 # PLACE ORDER
 
@@ -1471,6 +1477,43 @@ def edit_address():
     cur.close()
 
     return render_template('edit_address.html', user=user)
+
+# update address
+
+@app.route('/update_address', methods=['POST'])
+def update_address():
+
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+    UPDATE users
+    SET
+    fullname=%s,
+    phone=%s,
+    address=%s,
+    city=%s,
+    state=%s,
+    pincode=%s
+    WHERE id=%s
+    """,(
+
+        request.form['fullname'],
+        request.form['phone'],
+        request.form['address'],
+        request.form['city'],
+        request.form['state'],
+        request.form['pincode'],
+        session['user_id']
+
+    ))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect('/payments')
 
 # forgot password
 

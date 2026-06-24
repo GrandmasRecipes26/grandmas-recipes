@@ -6,6 +6,54 @@
 
     <h1>💳 Payment Page</h1>
 
+    {% if address_missing %}
+
+<div class="address-card">
+
+<h2>Delivery Address Required</h2>
+
+<form action="/update_address" method="POST">
+
+<input type="text"
+name="fullname"
+placeholder="Full Name"
+required>
+
+<input type="text"
+name="phone"
+placeholder="Phone Number"
+required>
+
+<input type="text"
+name="address"
+placeholder="Address"
+required>
+
+<input type="text"
+name="city"
+placeholder="City"
+required>
+
+<input type="text"
+name="state"
+placeholder="State"
+required>
+
+<input type="text"
+name="pincode"
+placeholder="Pincode"
+required>
+
+<button type="submit">
+Save Address
+</button>
+
+</form>
+
+</div>
+
+{% else %}
+
     <div class="address-box">
 
         <h3>Delivery Address</h3>
@@ -18,6 +66,11 @@
         <p><b>Pincode:</b> {{ user[5] }}</p>
 
     </div>
+
+    <a href="/edit_address"
+class="edit-btn">
+✏ Edit Address
+</a>
 
     <div class="order-summary">
 
