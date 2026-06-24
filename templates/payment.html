@@ -55,17 +55,23 @@
 
             <h3>Payment Methods</h3>
 
-        <div class="payment-option">
-             <input type="radio"
-                    name="payment_method"
-                    value="Cash On Delivery">
+        {% if free_delivery %}
+
+<div class="payment-option">
+    <input type="radio"
+           name="payment_method"
+           value="Cash On Delivery">
 
     🚚 Cash On Delivery
 </div>
+
 {% else %}
+
 <p style="color:red;font-weight:bold;">
-    Cash On Delivery Unavailable
+    🚫 Cash On Delivery Unavailable
 </p>
+
+{% endif %}
 
 <!-- PHONEPE -->
 
