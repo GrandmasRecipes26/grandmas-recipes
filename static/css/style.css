@@ -1407,3 +1407,111 @@ font-weight:bold;
     height:250px;
     border-radius:10px;
 }
+
+/* MOBILE RESPONSIVE FIX */
+
+@media screen and (max-width:768px){
+
+    .main-banner h1{
+        font-size:48px;
+    }
+
+    .main-banner h3{
+        font-size:22px;
+        padding:12px 25px;
+    }
+
+    .main-banner p{
+        font-size:16px;
+        padding:10px 20px;
+    }
+
+    .special-title{
+        font-size:26px;
+        letter-spacing:2px;
+    }
+
+    .products{
+        grid-template-columns:1fr;
+        padding:10px;
+    }
+
+    .card{
+        width:100%;
+    }
+
+    .profile-card{
+        padding:20px;
+    }
+
+    .profile-name{
+        font-size:24px;
+    }
+
+    .profile-email,
+    .profile-phone{
+        font-size:15px;
+    }
+
+    .action-buttons{
+        flex-direction:column;
+    }
+
+    .address-card{
+        width:90%;
+        padding:20px;
+    }
+
+    .address-card h2{
+        font-size:24px;
+    }
+
+    .address-card input{
+        font-size:16px;
+    }
+
+    .saved-address p{
+        font-size:16px;
+    }
+
+    .payment-container{
+        padding:10px;
+    }
+
+    .order-top{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .order-img{
+        width:100px;
+        height:100px;
+    }
+
+    .tracker{
+        flex-wrap:wrap;
+        gap:5px;
+    }
+
+    .line{
+        width:25px;
+    }
+
+    .cart-item{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .cart-item img{
+        width:100px;
+        height:100px;
+    }
+
+    .logo-center h3{
+        font-size:18px;
+    }
+
+    .logo-center p{
+        font-size:10px;
+    }
+}
