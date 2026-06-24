@@ -809,57 +809,7 @@ def place_order():
             delivery_charge = 0
         grand_total = total + delivery_charge
 
-    # SAVE ORDERS
-    for item in cart_items:
-
-        product_id = item[0]
-        variant_id = item[1]
-        quantity = int(item[2])
-
-        # PRODUCT DETAILS
-        cur.execute("""
-        SELECT name,image
-        FROM products
-        WHERE id=%s
-        """,(product_id,))
-
-        product = cur.fetchone()
-
-        if not product:
-            continue
-
-        product_name = product[0]
-        product_image = product[1]
-
-        # PRODUCT PRICE
-        cur.execute("""
-        SELECT price
-        FROM product_variants
-        WHERE id=%s
-        """,(variant_id,))
-
-        variant = cur.fetchone()
-
-        if not variant:
-            continue
-
-        price = float(variant[0])
-
-        item_total = price * quantity
-
-        # INSERT ORDER
-        print("PRODUCT ID =", product_id)
-        cur.execute("""
-                SELECT name,image
-                FROM products
-                WHERE id=%s
-                """,(product_id,))
-        product = cur.fetchone()
-        print("PRODUCT ID =", product_id)
-        print("PRODUCT NAME =", product_name)
-        print("PRODUCT IMAGE =", product_image)
-
-
+# CREATE SINGLE ORDER
 
         cur.execute("""
         INSERT INTO orders
@@ -872,31 +822,68 @@ def place_order():
             customer_name,
             payment_method,
             payment_status,
-            product_name,
-            product_image,
-            product_price,
-            delivery_charge,
-            quantity
+            delivery_charge
         )
-        VALUES
-        (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
         """,(
-
             session['user_id'],
-            item_total,
+            grand_total,
             'Placed',
             full_address,
-            user[5],
-            user[0],
+            phone,
+            customer_name,
             payment_method,
             'Paid',
-            product_name,
-            product_image,
-            price,
-            delivery_charge,
-            quantity
-
+            delivery_charge
         ))
+
+        order_id = cur.lastrowid
+
+        # SAVE ORDER ITEMS
+        
+        for item in cart_items:
+            
+            product_id = item[0]
+            variant_id = item[1]
+            quantity = int(item[2])
+
+            cur.execute("""
+            SELECT name
+            FROM products
+            WHERE id=%s
+            """,(product_id,))
+
+            product = cur.fetchone()
+
+            product_name = product[0]
+
+            cur.execute("""
+            SELECT price
+            FROM product_variants
+            WHERE id=%s
+            """,(variant_id,))
+
+            variant = cur.fetchone()
+
+            price = float(variant[0])
+
+            cur.execute("""
+            INSERT INTO order_items
+            (
+                order_id,
+                product_id,
+                product_name,
+                price,
+                quantity
+            )
+            VALUES(%s,%s,%s,%s,%s)
+            """,(
+                order_id,
+                product_id,
+                product_name,
+                price,
+                quantity
+            ))
 
     # CLEAR CART
     if session.get('buy_now'):
@@ -1003,9 +990,7 @@ def admin_dashboard():
         id,
         customer_name,
         phone,
-        address,
-        product_name,
-        product_image,               
+        address,              
         total_amount,
         payment_method,
         status,
