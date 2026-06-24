@@ -54,23 +54,25 @@
 
             <td>
 
-                {% if order[3] == 'Placed' %}
-                    <span class="placed">Placed</span>
+{% if order[3] == 'Placed' %}
 
-                {% elif order[3] == 'Shipped' %}
-                    <span class="shipped">Shipped</span>
+    <span class="placed">Placed</span>
 
-                {% elif order[3] == 'Delivered' %}
-                    <span class="delivered">Delivered</span>
+{% elif order[3] == 'Shipped' %}
 
-                {% endif %}
+    <span class="shipped">Shipped</span>
 
-                {% elif order[3] == 'Cancelled' %}
-                <span style="color:red;font-weight:bold;">
-                Cancelled
-                </span>
+{% elif order[3] == 'Delivered' %}
 
-            </td>
+    <span class="delivered">Delivered</span>
+
+{% elif order[3] == 'Cancelled' %}
+
+    <span class="cancelled">Cancelled</span>
+
+{% endif %}
+
+</td>
 
             <td>{{ order[10] }}</td>
 
