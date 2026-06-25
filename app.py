@@ -763,12 +763,16 @@ def place_order():
         """,(session['user_id'],))
 
         cart_items = cur.fetchall()
+        print("CART ITEMS =", cart_items)
 
     # TOTAL CALCULATION
     total = 0
 
     for item in cart_items:
+        print("CART ITEMS =", cart_items)
+        print("LENGTH =", len(cart_items))
 
+        product_id = item[0]
         variant_id = item[1]
         quantity = int(item[2])
 
@@ -790,15 +794,15 @@ def place_order():
             city = city.replace(".", "").replace(" ", "")
             print("CITY =", city)
 
-
 # FREE DELIVERY AREA
+
     if city in ['jangareddygudem', 'jangareddigudem']:
         delivery_charge = 0
         free_delivery = True
 
     else:
         free_delivery = False
-        
+
         if total < 500:
             delivery_charge = 50
 
@@ -807,55 +811,66 @@ def place_order():
 
         else:
             delivery_charge = 0
-        grand_total = total + delivery_charge
 
-        # CREATE SINGLE ORDER
+    grand_total = total + delivery_charge
 
-        cur.execute("""
-        INSERT INTO orders
-        (
-            user_id,
-            total_amount,
-            status,
-            address,
-            phone,
-            customer_name,
-            payment_method,
-            payment_status,
-            delivery_charge
-        )
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        """,(
-            session['user_id'],
-            grand_total,
-            'Placed',
-            full_address,
-            phone,
-            customer_name,
-            payment_method,
-            'Paid',
-            delivery_charge
-        ))
+# CREATE SINGLE ORDER
 
-        order_id = cur.lastrowid
+    cur.execute("""
+    INSERT INTO orders
+    (
+        user_id,
+        total_amount,
+        status,
+        address,
+        phone,
+        customer_name,
+        payment_method,
+        payment_status,
+        delivery_charge
+    )
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    """,(
+        session['user_id'],
+        grand_total,
+        'Placed',
+        full_address,
+        phone,
+        customer_name,
+        payment_method,
+        'Paid',
+        delivery_charge
+    ))
+
+    order_id = cur.lastrowid
+
+    print("ORDER CREATED")
+    print("ORDER ID =", order_id)
+    print("LOOP START")
 
         # SAVE ORDER ITEMS
         
-        for item in cart_items:
+    for item in cart_items:
             
+            print("INSIDE LOOP =", item)
+
             product_id = item[0]
             variant_id = item[1]
             quantity = int(item[2])
 
             cur.execute("""
-            SELECT name
+            SELECT name,image
             FROM products
             WHERE id=%s
             """,(product_id,))
 
             product = cur.fetchone()
-
+            print("PRODUCT =", product)
+            
             product_name = product[0]
+            product_image = product[1]
+
+            print("IMAGE =", product_image)
 
             cur.execute("""
             SELECT price
@@ -864,26 +879,39 @@ def place_order():
             """,(variant_id,))
 
             variant = cur.fetchone()
+            print("VARIANT =", variant)
 
             price = float(variant[0])
+
+            print("ORDER ID =", order_id)
+            print("PRODUCT ID =", product_id)
+            print("PRODUCT NAME =", product_name)
+            print("PRODUCT IMAGE =", product_image)
+
 
             cur.execute("""
             INSERT INTO order_items
             (
                 order_id,
                 product_id,
-                product_name,
+                variant_id,
+                quantity,
                 price,
-                quantity
+                product_name,
+                product_image
             )
-            VALUES(%s,%s,%s,%s,%s)
+            VALUES(%s,%s,%s,%s,%s,%s,%s)
             """,(
                 order_id,
                 product_id,
-                product_name,
+                variant_id,
+                quantity,
                 price,
-                quantity
+                product_name,
+                product_image
             ))
+            print("ORDER ITEM INSERTED")
+            
 
     # CLEAR CART
     if session.get('buy_now'):
@@ -899,6 +927,9 @@ def place_order():
         DELETE FROM cart
         WHERE user_id=%s
         """,(session['user_id'],))
+        
+    cur.execute("SELECT COUNT(*) FROM order_items")
+    print("COUNT BEFORE COMMIT =", cur.fetchone()[0])
 
     mysql.connection.commit()
     cur.close()
@@ -984,6 +1015,12 @@ def admin_dashboard():
         return redirect('/admin/login')
 
     cur = mysql.connection.cursor()
+    cur.execute("SHOW COLUMNS FROM order_items")
+    print("COLUMNS =", cur.fetchall())
+    cur.execute("SELECT DATABASE()")
+    print("DATABASE =", cur.fetchone())
+    orders = []
+
 
     cur.execute("""
     SELECT
@@ -1001,9 +1038,8 @@ def admin_dashboard():
     FROM orders o 
     LEFT JOIN order_items oi
     ON o.id = oi.order_id
-    GROUP BY o.id
-    
 
+    GROUP BY o.id
     ORDER BY o.id DESC
     """)
 
@@ -1337,8 +1373,27 @@ def admin_orders():
     cur = mysql.connection.cursor()
 
     cur.execute("""
-        SELECT * FROM orders
-        ORDER BY id DESC
+    SELECT
+        o.id,
+        o.user_id,
+        o.total_amount,
+        o.status,
+        o.address,
+        o.delivery_charge,
+        o.phone,
+        o.customer_name,
+        o.payment_method,
+        o.payment_status,
+        o.created_at,
+        oi.product_name,
+        oi.product_image
+
+    FROM orders o
+
+    LEFT JOIN order_items oi
+    ON o.id = oi.order_id
+
+    ORDER BY o.id DESC
     """)
 
     orders = cur.fetchall()
