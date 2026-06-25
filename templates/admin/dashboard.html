@@ -88,12 +88,23 @@ Logout
 
 <td>
 
-{% set imgs = order[6].split(',') %}
-    <img src="{{ url_for('static', filename='images/' + imgs[0]) }}" width="60">
+{% if order[6] %}
+
+    {% set imgs = order[6].split(',') %}
+
+    <img
+    src="{{ url_for('static',
+    filename='images/' + imgs[0].strip()) }}"
+    width="60">
+
+{% else %}
+
+    No Image
+
+{% endif %}
 
 <br><br>
 
-Multiple Products
 {{ order[5] }}
 
 </td>
