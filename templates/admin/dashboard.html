@@ -88,18 +88,17 @@ Logout
 
 <td>
 
-    <img
-    src="{{ url_for('static',
-    filename='images/' + order[5]) }}"
-    width="60">
+{% set imgs = order[6].split(',') %}
+    <img src="{{ url_for('static', filename='images/' + imgs[0]) }}" width="60">
 
-    <br><br>
+<br><br>
 
-    {{ order[4] }}
+Multiple Products
+{{ order[5] }}
 
 </td>
 
-<td>₹{{ order[6] }}</td>
+<td>₹{{ order[4] }}</td>
 
 <td>{{ order[7] }}</td>
 
@@ -112,7 +111,7 @@ method="POST">
 <select name="status">
 
 <option value="Placed"
-{% if order[7]=='Placed' %}
+{% if order[8]=='Placed' %}
 selected
 {% endif %}
 >
@@ -120,7 +119,7 @@ Placed
 </option>
 
 <option value="Shipped"
-{% if order[7]=='Shipped' %}
+{% if order[8]=='Shipped' %}
 selected
 {% endif %}
 >
@@ -128,7 +127,7 @@ Shipped
 </option>
 
 <option value="Delivered"
-{% if order[7]=='Delivered' %}
+{% if order[8]=='Delivered' %}
 selected
 {% endif %}
 >
@@ -136,7 +135,7 @@ Delivered
 </option>
 
 <option value="Cancelled"
-{% if order[7]=='Cancelled' %}
+{% if order[8]=='Cancelled' %}
 selected
 {% endif %}
 >

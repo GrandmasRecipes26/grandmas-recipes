@@ -809,7 +809,7 @@ def place_order():
             delivery_charge = 0
         grand_total = total + delivery_charge
 
-# CREATE SINGLE ORDER
+        # CREATE SINGLE ORDER
 
         cur.execute("""
         INSERT INTO orders
@@ -987,18 +987,24 @@ def admin_dashboard():
 
     cur.execute("""
     SELECT
-        id,
-        customer_name,
-        phone,
-        address,              
-        total_amount,
-        payment_method,
-        status,
-        created_at
+        o.id,
+        o.customer_name,
+        o.phone,
+        o.address,
+        o.total_amount,
+        GROUP_CONCAT(oi.product_name SEPARATOR ', ') AS products,
+        GROUP_CONCAT(oi.product_image SEPARATOR ', ') AS images,
+        o.payment_method,
+        o.status,
+        o.created_at
 
-    FROM orders 
+    FROM orders o 
+    LEFT JOIN order_items oi
+    ON o.id = oi.order_id
+    GROUP BY o.id
+    
 
-    ORDER BY id DESC
+    ORDER BY o.id DESC
     """)
 
     orders = cur.fetchall()
