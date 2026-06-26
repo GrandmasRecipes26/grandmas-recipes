@@ -1559,3 +1559,30 @@ font-weight:bold;
         font-size:9px;
     }
 }
+
+/* place order */
+
+.pay-btn {
+    background-color: #ff6600;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.pay-btn:hover {
+    background-color: #e65c00;
+}
+
+.payment-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+}
+
+.payment-option {
+    margin: 10px 0;
+}

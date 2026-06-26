@@ -161,13 +161,12 @@ class="edit-btn">
 
     <br>
 
+    <a href="upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR">
     <img src="{{ url_for('static',
     filename='qr/phonepe_qr.jpeg') }}"
     width="250">
+    </a>
 
-    <p>
-        Amount : ₹{{ grand_total }}
-    </p>
 
 </div>
 
@@ -207,13 +206,12 @@ class="edit-btn">
 
     <br>
 
+    <a href="upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR">
     <img src="{{ url_for('static',
     filename='qr/gpay_qr.jpeg') }}"
     width="250">
+    </a>
 
-    <p>
-        Amount : ₹{{ grand_total }}
-    </p>
 
 </div>
 
@@ -253,13 +251,11 @@ class="edit-btn">
 
     <br>
 
+    <a href="upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR">
     <img src="{{ url_for('static',
     filename='qr/paytm_qr.jpeg') }}"
     width="250">
-
-    <p>
-        Amount : ₹{{ grand_total }}
-    </p>
+    </a>
 
 </div>
 
@@ -294,12 +290,9 @@ class="edit-btn">
 
 </div>
 
-<button type="submit"
-     class="place-order-btn">
-Place Order </button>
-
-
-        </button>
+<button type="submit" class="pay-btn">
+💳 Place Order
+</button>
 
     </form>
 

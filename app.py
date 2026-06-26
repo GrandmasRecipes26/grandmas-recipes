@@ -8,9 +8,8 @@ from werkzeug.utils import secure_filename
 from flask_mail import Mail, Message
 
 app = Flask(__name__)
-app.secret_key = "grandmasrecipes"
+app.secret_key = "grandmas_recipes"
 app.config['SESSION_PERMANENT'] = True
-
 
 app.config['MYSQL_HOST'] = 'mainline.proxy.rlwy.net'
 app.config['MYSQL_USER'] = 'root'
@@ -711,8 +710,11 @@ def payment():
     delivery_charge=delivery_charge,
     grand_total=grand_total,
     free_delivery=free_delivery,
-    address_missing=address_missing
+    address_missing=address_missing,
+
+    
 )
+
 
 # PLACE ORDER
 
@@ -933,6 +935,7 @@ def place_order():
 
     mysql.connection.commit()
     cur.close()
+
 
     return render_template(
         "order_success.html",
