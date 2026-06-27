@@ -867,7 +867,6 @@ def place_order():
             """,(product_id,))
 
             product = cur.fetchone()
-            print("PRODUCT =", product)
             
             product_name = product[0]
             product_image = product[1]
@@ -887,6 +886,9 @@ def place_order():
 
             print("ORDER ID =", order_id)
             print("PRODUCT ID =", product_id)
+            print("VARIANT ID =", variant_id)
+            print("QUANTITY =", quantity)
+            print("PRICE =", price)
             print("PRODUCT NAME =", product_name)
             print("PRODUCT IMAGE =", product_image)
 
@@ -955,10 +957,27 @@ def orders():
     cur = mysql.connection.cursor()
 
     cur.execute("""
-    SELECT *
-    FROM orders
-    WHERE user_id=%s
-    ORDER BY id DESC
+    SELECT
+    o.id,
+    o.total_amount,
+    o.status,
+    o.payment_method,
+    o.delivery_charge,
+    o.order_date,
+
+    oi.product_name,
+    oi.product_image,
+    oi.price,
+    oi.quantity
+
+    FROM orders o
+
+    JOIN order_items oi
+    ON o.id = oi.order_id
+
+    WHERE o.user_id=%s
+ 
+    ORDER BY o.id DESC
     """,(session['user_id'],))
 
     orders = cur.fetchall()

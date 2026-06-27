@@ -1147,6 +1147,29 @@ color:red;
     border-radius:5px;
 }
 
+.pay-btn,
+.upi-btn,
+.qr-btn{
+
+    -webkit-tap-highlight-color: transparent;
+
+    outline:none;
+
+}
+
+button{
+
+    -webkit-tap-highlight-color: transparent;
+
+}
+
+.upi-btn:active,
+.qr-btn:active{
+
+transform:scale(.98);
+
+}
+
 
 /* place order */
 

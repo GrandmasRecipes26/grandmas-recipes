@@ -277,21 +277,30 @@ class="edit-btn">
 <div id="card-box" class="pay-box">
 
 <input type="text"
+       id="cardNumber"
        placeholder="Card Number">
 
 <input type="text"
+       id="cardHolder"
        placeholder="Card Holder Name">
 
 <input type="text"
+       id="expiry"
        placeholder="MM/YY">
 
 <input type="password"
+       id="cvv"
        placeholder="CVV">
 
 </div>
 
-<button type="submit" class="pay-btn">
+<button
+type="submit"
+class="pay-btn"
+onclick="return validatePayment()">
+
 💳 Place Order
+
 </button>
 
     </form>
@@ -362,6 +371,12 @@ function showPhonePeQR(){
 }
 
 
+function openPhonePe() {
+    window.location.href =
+    "upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR";
+}
+
+
 function showGPayQR(){
 
     let qr = document.getElementById("gpay-qr");
@@ -369,6 +384,11 @@ function showGPayQR(){
     if(qr){
         qr.style.display = "block";
     }
+}
+
+function openGPay() {
+    window.location.href =
+    "upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR";
 }
 
 
@@ -379,6 +399,53 @@ function showPaytmQR(){
     if(qr){
         qr.style.display = "block";
     }
+}
+
+function openPaytm() {
+    window.location.href =
+    "upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR";
+}
+
+function validatePayment(){
+
+    let selected =
+    document.querySelector('input[name="payment_method"]:checked');
+
+    if(!selected){
+        alert("Please select a payment method.");
+        return false;
+    }
+
+    if(selected.value=="Card"){
+
+        let cardNumber=document.getElementById("cardNumber").value.trim();
+        let holder=document.getElementById("cardHolder").value.trim();
+        let expiry=document.getElementById("expiry").value.trim();
+        let cvv=document.getElementById("cvv").value.trim();
+
+        if(cardNumber==""){
+            alert("Please enter Card Number.");
+            return false;
+        }
+
+        if(holder==""){
+            alert("Please enter Card Holder Name.");
+            return false;
+        }
+
+        if(expiry==""){
+            alert("Please enter Expiry Date.");
+            return false;
+        }
+
+        if(cvv==""){
+            alert("Please enter CVV.");
+            return false;
+        }
+
+    }
+
+    return true;
 }
 
 </script>
