@@ -39,7 +39,7 @@ class="order-img">
 
                     <p>
                     <b>Total:</b>
-                    ₹{{ order[2] }}
+                    ₹{{ order[1] }}
                     </p>
 
                     <p>
@@ -65,16 +65,16 @@ class="order-img">
                     <p>
                         <b>Status:</b>
 
-                        {% if order[3] == 'Placed' %}
+                        {% if order[2] == 'Placed' %}
                             <span class="placed">Placed</span>
 
-                        {% elif order[3] == 'Shipped' %}
+                        {% elif order[2] == 'Shipped' %}
                             <span class="shipped">Shipped</span>
 
-                        {% elif order[3] == 'Delivered' %}
+                        {% elif order[2] == 'Delivered' %}
                             <span class="delivered">Delivered</span>
 
-                        {% elif order[3] == 'Cancelled' %}
+                        {% elif order[2] == 'Cancelled' %}
                             <span class="cancelled">Cancelled</span>
 
                         {% endif %}
@@ -90,7 +90,7 @@ class="order-img">
             <div class="tracker">
 
                 <div class="step
-                {% if order[3]=='Placed' or order[3]=='Shipped' or order[3]=='Delivered' %}
+                {% if order[2]=='Placed' or order[2]=='Shipped' or order[2]=='Delivered' %}
                 active
                 {% endif %}
                 ">
@@ -100,7 +100,7 @@ class="order-img">
                 <div class="line"></div>
 
                 <div class="step
-                {% if order[3]=='Shipped' or order[3]=='Delivered' %}
+                {% if order[2]=='Shipped' or order[2]=='Delivered' %}
                 active
                 {% endif %}
                 ">
@@ -110,7 +110,7 @@ class="order-img">
                 <div class="line"></div>
 
                 <div class="step
-                {% if order[3]=='Delivered' %}
+                {% if order[2]=='Delivered' %}
                 active
                 {% endif %}
                 ">
@@ -123,7 +123,7 @@ class="order-img">
 
             <div class="order-actions">
 
-                {% if order[3] == 'Placed' %}
+                {% if order[2] == 'Placed' %}
 
                 <form action="/cancel_order/{{ order[0] }}" method="POST">
 
