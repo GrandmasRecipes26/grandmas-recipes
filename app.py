@@ -738,13 +738,20 @@ def place_order():
     if 'user_id' not in session:
         return redirect('/login')
     
-    if not session.get("payment_verified"):
-        flash("Please complete the payment first.")
-        return redirect("/payments")
-    session.pop("payment_verified", None)
-        
-    payment_method = session.get("payment_method")
+    payment_method = request.form.get("payment_method")
     
+    if payment_method is None:
+        
+        payment_method = session.get("payment_method")
+        session["payment_method"] = payment_method
+
+    if payment_method != "Cash On Delivery":
+        if not session.get("payment_verified"):
+            flash("Please complete payment first.")
+            return redirect("/payments")
+
+        session.pop("payment_verified", None)
+
     cur = mysql.connection.cursor()
 
     # USER DETAILS
