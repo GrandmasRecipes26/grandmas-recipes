@@ -25,16 +25,16 @@
             <div class="order-top">
 
                 <img src="{{ url_for('static',
-filename='images/' + (order[12] or 'no-image.jpg')) }}"
+filename='images/' + (order[7] or 'no-image.jpg')) }}"
 class="order-img">
 
                 <div classs="order-info">
 
-                    <h3>{{ order[11] }}</h3>
+                    <h3>{{ order[6] }}</h3>
 
                     <p>
                     <b>Price:</b>
-                    ₹{{ order[13] }}
+                    ₹{{ order[8] }}
                     </p>
 
                     <p>
@@ -44,22 +44,22 @@ class="order-img">
 
                     <p>
                         <b>Payment:</b>
-                        {{ order[8] }}
+                        {{ order[3] }}
                     </p>
 
                     <p>
                     <b>Quantity:</b>
-                    {{ order[14] }}
+                    {{ order[9] }}
                     </p>
 
                     <p>
                         <b>Order Date:</b>
-                        {{ order[10] }}
+                        {{ order[5] }}
                     </p>
 
                     <p>
                     <b>Delivery:</b>
-                    ₹{{ order[9] }}
+                    ₹{{ order[4] }}
                     </p>
 
                     <p>

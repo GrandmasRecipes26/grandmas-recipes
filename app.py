@@ -963,7 +963,7 @@ def orders():
     o.status,
     o.payment_method,
     o.delivery_charge,
-    o.order_date,
+    o.created_at,
 
     oi.product_name,
     oi.product_image,
