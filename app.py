@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session, flash, jsonify
 from flask_mysqldb import MySQL
 import webbrowser
 import threading
+import hmac
+import hashlib
+import razorpay
 import datetime
 import random
 import os
@@ -10,6 +13,16 @@ from flask_mail import Mail, Message
 
 app = Flask(__name__)
 app.secret_key = "grandmas_recipes"
+# Razorpay Live Keys
+
+RAZORPAY_KEY_ID = "rzp_live_T6evu4KccalW7a"
+
+RAZORPAY_KEY_SECRET = "rHTehkg0Ed17R6G1jzD1VrK8"
+
+razorpay_client = razorpay.Client(
+    auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET)
+)
+
 app.config['SESSION_PERMANENT'] = True
 
 app.config['MYSQL_HOST'] = 'mainline.proxy.rlwy.net'
@@ -724,12 +737,12 @@ def place_order():
 
     if 'user_id' not in session:
         return redirect('/login')
-
-    payment_method = request.form.get('payment_method')
-
-    if not payment_method:
-        flash("Please Select Payment Method")
-        return redirect('/payments')
+    
+    payment_method = request.form.get("payment_method")
+    
+    if payment_method is None:
+        
+        payment_method = session.get("payment_method")
     
     cur = mysql.connection.cursor()
 
@@ -743,6 +756,7 @@ def place_order():
     user = cur.fetchone()
 
     customer_name = user[0]
+    session["payment_method"] = payment_method
 
     full_address = f"{user[1]}, {user[2]}, {user[3]}, {user[4]}"
     phone = user[5]
@@ -825,6 +839,7 @@ def place_order():
         user_id,
         total_amount,
         status,
+        created_at,
         address,
         phone,
         customer_name,
@@ -832,7 +847,7 @@ def place_order():
         payment_status,
         delivery_charge
     )
-    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    VALUES (%s,%s,%s,NOW(),%s,%s,%s,%s,%s,%s)
     """,(
         session['user_id'],
         grand_total,
@@ -977,25 +992,15 @@ def orders():
     ON o.id = oi.order_id
 
     WHERE o.user_id=%s
- 
-    ORDER BY o.id DESC
-    """,(session['user_id'],))
+
+    """, (session['user_id'],))
 
     orders = cur.fetchall()
-    
-    orders = list(orders)
-    
-    for i in range(len(orders)):
-        row = list(orders[i])
-    
-    if row[5]:
-        row[5] = row[5] + datetime.timedelta(hours=5, minutes=30)
-        orders[i] = tuple(row)
-        
-        cur.close()
+
+    cur.close()
 
     return render_template(
-        'orders.html',
+        "orders.html",
         orders=orders
     )
 
@@ -1022,6 +1027,72 @@ def cancel_order(order_id):
     flash("Order Cancelled Successfully")
 
     return redirect('/orders')
+
+# razorpay
+
+@app.route("/create_razorpay_order", methods=["POST"])
+def create_razorpay_order():
+
+    if 'user_id' not in session:
+        return jsonify({"error": "Login Required"})
+
+    amount = float(request.form["amount"])
+
+    amount_paise = int(amount * 100)
+
+    razorpay_order = razorpay_client.order.create({
+
+        "amount": amount_paise,
+
+        "currency": "INR",
+
+        "payment_capture": 1
+
+    })
+
+    return jsonify({
+
+        "order_id": razorpay_order["id"],
+
+        "amount": razorpay_order["amount"],
+
+        "key": RAZORPAY_KEY_ID
+
+    })
+
+# payment
+
+@app.route('/payment_success')
+def payment_success():
+
+    payment_id = request.args.get("payment_id")
+    order_id = request.args.get("order_id")
+    signature = request.args.get("signature")
+
+    params = {
+        'razorpay_order_id': order_id,
+        'razorpay_payment_id': payment_id,
+        'razorpay_signature': signature
+    }
+
+    try:
+        razorpay_client.utility.verify_payment_signature(params)
+
+        session["payment_verified"] = True
+
+        return redirect("/place_order")
+
+    except Exception as e:
+
+        flash("Payment Verification Failed")
+        return redirect("/payments")
+
+# cancel payment
+
+@app.route("/payment_cancelled")
+def payment_cancelled():
+    return render_template("payment_cancelled.html")
+
 # adminn
 
 @app.route('/admin')

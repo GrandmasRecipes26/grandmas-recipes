@@ -101,7 +101,7 @@ class="edit-btn">
 
 </div>
 
-    <form action="/place_order" method="POST">
+    <form id="paymentForm">
 
 
         <div class="payment-option">
@@ -295,19 +295,25 @@ class="edit-btn">
 </div>
 
 <button
-type="submit"
+type="button"
 class="pay-btn"
 onclick="return validatePayment()">
 
-💳 Place Order
-
+💳 Continue to Payment
 </button>
+
+<input
+type="hidden"
+id="grand_total"
+value="{{ grand_total }}">
 
     </form>
 
 </div>
 
 <script>
+
+
 
 function showPayment(){
 
@@ -416,39 +422,124 @@ function validatePayment(){
         return false;
     }
 
-    if(selected.value=="Card"){
+    let method = selected.value;
 
-        let cardNumber=document.getElementById("cardNumber").value.trim();
-        let holder=document.getElementById("cardHolder").value.trim();
-        let expiry=document.getElementById("expiry").value.trim();
-        let cvv=document.getElementById("cvv").value.trim();
+    // Card Validation
+    if(method === "Card"){
 
-        if(cardNumber==""){
-            alert("Please enter Card Number.");
-            return false;
-        }
+        let cardNumber =
+        document.querySelector("#card-box input[placeholder='Card Number']").value.trim();
 
-        if(holder==""){
-            alert("Please enter Card Holder Name.");
-            return false;
-        }
+        let holder =
+        document.querySelector("#card-box input[placeholder='Card Holder Name']").value.trim();
 
-        if(expiry==""){
-            alert("Please enter Expiry Date.");
-            return false;
-        }
+        let expiry =
+        document.querySelector("#card-box input[placeholder='MM/YY']").value.trim();
 
-        if(cvv==""){
-            alert("Please enter CVV.");
+        let cvv =
+        document.querySelector("#card-box input[placeholder='CVV']").value.trim();
+
+        if(cardNumber=="" || holder=="" || expiry=="" || cvv==""){
+            alert("Please fill all Card Details.");
             return false;
         }
 
     }
 
-    return true;
+    // Cash On Delivery
+if(method === "Cash On Delivery"){
+
+    document.getElementById("paymentForm").action="/place_order";
+    document.getElementById("paymentForm").method="POST";
+    document.getElementById("paymentForm").submit();
+
+    return false;
+
 }
+
+// PhonePe / GPay / Paytm / Card
+startPayment();
+
+return false;
+}
+
+function startPayment(){
+
+    fetch("/create_razorpay_order",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+
+        body: new URLSearchParams({
+    amount: "{{ grand_total }}"
+})
+
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        var options = {
+
+    key: data.key,
+
+    amount: data.amount,
+
+    currency: "INR",
+
+    name: "Grandma's Recipes",
+
+    description: "Food Order",
+
+    order_id: data.order_id,
+
+    prefill: {
+    name: "{{ user[0] }}",
+    contact: "{{ user[1] }}"
+},
+
+    handler: function(response){
+
+        window.location.href =
+        "/payment_success?payment_id=" +
+        response.razorpay_payment_id +
+        "&order_id=" +
+        response.razorpay_order_id +
+        "&signature=" +
+        response.razorpay_signature;
+
+    },
+
+    modal: {
+    ondismiss: function () {
+
+        window.location.href = "/payment_cancelled";
+
+    }
+},
+
+theme:{
+    color:"#D35400"
+}
+
+    
+
+};
+
+        var rzp=new Razorpay(options);
+
+        rzp.open();
+
+    });
+
+}
+
+
 
 </script>
 {% endif %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 {% endblock %}
