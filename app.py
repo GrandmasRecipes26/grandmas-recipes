@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, flash
 from flask_mysqldb import MySQL
 import webbrowser
 import threading
+import datetime
 import random
 import os
 from werkzeug.utils import secure_filename
@@ -981,8 +982,17 @@ def orders():
     """,(session['user_id'],))
 
     orders = cur.fetchall()
-
-    cur.close()
+    
+    orders = list(orders)
+    
+    for i in range(len(orders)):
+        row = list(orders[i])
+    
+    if row[5]:
+        row[5] = row[5] + datetime.timedelta(hours=5, minutes=30)
+        orders[i] = tuple(row)
+        
+        cur.close()
 
     return render_template(
         'orders.html',
