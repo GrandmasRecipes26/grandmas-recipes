@@ -738,11 +738,12 @@ def place_order():
     if 'user_id' not in session:
         return redirect('/login')
     
-    payment_method = request.form.get("payment_method")
-    
-    if payment_method is None:
+    if not session.get("payment_verified"):
+        flash("Please complete the payment first.")
+        return redirect("/payments")
+    session.pop("payment_verified", None)
         
-        payment_method = session.get("payment_method")
+    payment_method = session.get("payment_method")
     
     cur = mysql.connection.cursor()
 
@@ -1062,12 +1063,14 @@ def create_razorpay_order():
 
 # payment
 
-@app.route('/payment_success')
+@app.route('/payment_success', methods=['POST'])
 def payment_success():
 
-    payment_id = request.args.get("payment_id")
-    order_id = request.args.get("order_id")
-    signature = request.args.get("signature")
+    data = request.get_json()
+
+    payment_id = data.get("payment_id")
+    order_id = data.get("razorpay_order_id")
+    signature = data.get("signature")
 
     params = {
         'razorpay_order_id': order_id,
@@ -1076,16 +1079,20 @@ def payment_success():
     }
 
     try:
+
         razorpay_client.utility.verify_payment_signature(params)
 
         session["payment_verified"] = True
 
-        return redirect("/place_order")
+        return jsonify({
+            "status": "success"
+        })
 
-    except Exception as e:
+    except Exception:
 
-        flash("Payment Verification Failed")
-        return redirect("/payments")
+        return jsonify({
+            "status": "failed"
+        })
 
 # cancel payment
 
