@@ -129,137 +129,14 @@ class="edit-btn">
 
 <!-- PHONEPE -->
 
-<div class="payment-option">
-
-<input type="radio"
-       name="payment_method"
-       value="PhonePe"
-       onclick="showPayment('phonepe')"
-       required>
-
+<input type="radio" name="payment_method" value="PhonePe">
 📱 PhonePe
 
-</div>
-
-<div id="phonepe-box" class="pay-box">
-    <div class="upi-buttons">
-
-<button type="button"
-        class="qr-btn"
-        onclick="showPhonePeQR()">
-    📷 Scan By QR Code
-</button>
-
-<button type="button"
-        class="upi-btn"
-        onclick="openPhonePe()">
-    📱 Pay By UPI App
-</button>
-</div>
-
-<div id="phonepe-qr" style="display:none;">
-
-    <br>
-
-    <a href="upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR">
-    <img src="{{ url_for('static',
-    filename='qr/phonepe_qr.jpeg') }}"
-    width="250">
-    </a>
-
-
-</div>
-
-</div>
-
-<!-- GOOGLE PAY -->
-
-<div class="payment-option">
-
-<input type="radio"
-       name="payment_method"
-       value="Google Pay"
-       onclick="showPayment('gpay')"
-       required>
-
+<input type="radio" name="payment_method" value="Google Pay">
 💰 Google Pay
 
-</div>
-
-<div id="gpay-box" class="pay-box">
-    <div class="upi-buttons">
-
-<button type="button"
-        class="qr-btn"
-        onclick="showGPayQR()">
-    📷 Scan By QR Code
-</button>
-
-<button type="button"
-        class="upi-btn"
-        onclick="openGPay()">
-    📱 Pay By UPI Apps
-</button>
-</div>
-
-<div id="gpay-qr" style="display:none;">
-
-    <br>
-
-    <a href="upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR">
-    <img src="{{ url_for('static',
-    filename='qr/gpay_qr.jpeg') }}"
-    width="250">
-    </a>
-
-
-</div>
-
-</div>
-
-<!-- PAYTM -->
-
-<div class="payment-option">
-
-<input type="radio"
-       name="payment_method"
-       value="Paytm"
-       onclick="showPayment('paytm')"
-       required>
-
+<input type="radio" name="payment_method" value="Paytm">
 🏦 Paytm
-
-</div>
-
-<div id="paytm-box" class="pay-box">
-    <div class="upi-buttons">
-
-<button type="button"
-        class="qr-btn"
-        onclick="showPaytmQR()">
-    📷 Scan By QR Code
-</button>
-
-<button type="button"
-        class="upi-btn"
-        onclick="openPaytm()">
-    📱 Pay By UPI App
-</button>
-</div>
-
-<div id="paytm-qr" style="display:none;">
-
-    <br>
-
-    <a href="upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR">
-    <img src="{{ url_for('static',
-    filename='qr/paytm_qr.jpeg') }}"
-    width="250">
-    </a>
-
-</div>
-
-</div>
 
 <!-- CARD -->
 
@@ -267,8 +144,7 @@ class="edit-btn">
 
 <input type="radio"
        name="payment_method"
-       value="Card"
-       onclick="showPayment('card')">
+       value="Card">
 
 💳 Credit / Debit Card
 
@@ -313,104 +189,6 @@ value="{{ grand_total }}">
 
 <script>
 
-
-
-function showPayment(){
-
-    let phonepeBox = document.getElementById("phonepe-box");
-    let gpayBox = document.getElementById("gpay-box");
-    let paytmBox = document.getElementById("paytm-box");
-    let cardBox = document.getElementById("card-box");
-
-    if(phonepeBox){
-        phonepeBox.style.display = "none";
-    }
-
-    if(gpayBox){
-        gpayBox.style.display = "none";
-    }
-
-    if(paytmBox){
-        paytmBox.style.display = "none";
-    }
-
-    if(cardBox){
-        cardBox.style.display = "none";
-    }
-
-    let selected =
-    document.querySelector(
-    'input[name="payment_method"]:checked'
-    );
-
-    if(!selected){
-        return;
-    }
-
-    let method = selected.value;
-
-    if(method === "PhonePe" && phonepeBox){
-        phonepeBox.style.display = "block";
-    }
-
-    if(method === "Google Pay" && gpayBox){
-        gpayBox.style.display = "block";
-    }
-
-    if(method === "Paytm" && paytmBox){
-        paytmBox.style.display = "block";
-    }
-
-    if(method === "Card" && cardBox){
-        cardBox.style.display = "block";
-    }
-}
-
-
-function showPhonePeQR(){
-
-    let qr = document.getElementById("phonepe-qr");
-
-    if(qr){
-        qr.style.display = "block";
-    }
-}
-
-
-function openPhonePe() {
-    window.location.href =
-    "upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR";
-}
-
-
-function showGPayQR(){
-
-    let qr = document.getElementById("gpay-qr");
-
-    if(qr){
-        qr.style.display = "block";
-    }
-}
-
-function openGPay() {
-    window.location.href =
-    "upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR";
-}
-
-
-function showPaytmQR(){
-
-    let qr = document.getElementById("paytm-qr");
-
-    if(qr){
-        qr.style.display = "block";
-    }
-}
-
-function openPaytm() {
-    window.location.href =
-    "upi://pay?pa=6303095963@ybl&pn=GrandmasRecipes&am={{grand_total}}&cu=INR";
-}
 
 function validatePayment(){
 
