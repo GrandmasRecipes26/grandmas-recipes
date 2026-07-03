@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, flash, jsonify
 from flask_mysqldb import MySQL
+import requests
 import webbrowser
 import threading
 import hmac
@@ -13,6 +14,21 @@ from flask_mail import Mail, Message
 
 app = Flask(__name__)
 app.secret_key = "grandmas_recipes"
+
+# telegram
+BOT_TOKEN = "8830550447:AAFqWOw_gfeJNX48mXZ0UufoYsVMvP_YB3M"
+CHAT_ID = "878671333"
+
+def send_telegram_notification(message):
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+
+    data = {
+        "chat_id": CHAT_ID,
+        "text": message
+    }
+
+    requests.post(url, data=data)
+
 # Razorpay Live Keys
 
 RAZORPAY_KEY_ID = "rzp_live_T6evu4KccalW7a"
@@ -958,6 +974,30 @@ def place_order():
         
     cur.execute("SELECT COUNT(*) FROM order_items")
     print("COUNT BEFORE COMMIT =", cur.fetchone()[0])
+    
+    message = f"""
+    🍲 NEW ORDER RECEIVED
+    
+    🆔 Order ID : {order_id}
+
+    👤 Customer : {customer_name}
+
+    📞 Phone : {phone}
+
+    📍 Address :
+    {full_address}
+
+    💳 Payment :
+    {payment_method}
+
+    💰 Total :
+    ₹{grand_total}
+
+    📦 Status :
+    Placed
+    """
+    
+    send_telegram_notification(message)
 
     mysql.connection.commit()
     cur.close()
