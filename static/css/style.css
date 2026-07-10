@@ -1641,3 +1641,52 @@ font-weight:bold;
     font-size:14px;
     font-weight:bold;
 }
+
+/* ================= HOME FOOTER ================= */
+
+.home-footer{
+    width:100%;
+    text-align:center;
+    padding:35px 20px;
+    margin-top:50px;
+}
+
+.home-footer h3{
+    color:#8b4513;
+    font-size:22px;
+    margin-bottom:8px;
+}
+
+.home-footer h2{
+    color:#333;
+    font-size:28px;
+    margin-bottom:5px;
+}
+
+
+.home-footer p{
+    color:#8B0000;   /* Dark Red */
+    font-size:17px;
+    font-weight:bold;
+}
+
+.helpline-numbers{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:10px;
+}
+
+.helpline-numbers a{
+    text-decoration:none;
+    color:#d35400;
+    font-size:19px;
+    font-weight:bold;
+}
+
+.helpline-numbers span{
+    color:#888;
+    font-size:20px;
+}
