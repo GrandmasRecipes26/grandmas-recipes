@@ -10,6 +10,59 @@
 
     <h1>📦 Orders Management</h1>
 
+    <div class="order-summary">
+
+    <div class="summary-card">
+        <h3>Today's Orders</h3>
+        <h2>{{ today_orders }}</h2>
+    </div>
+
+    <div class="summary-card">
+        <h3>Today's Sales</h3>
+        <h2>₹{{ today_sales }}</h2>
+    </div>
+
+    <div class="summary-card">
+        <h3>Yesterday Orders</h3>
+        <h2>{{ yesterday_orders }}</h2>
+    </div>
+
+    <div class="summary-card">
+        <h3>Yesterday Sales</h3>
+        <h2>₹{{ yesterday_sales }}</h2>
+    </div>
+
+</div>
+
+<div class="order-filters">
+
+<a href="/admin/orders?filter=today"
+class="{% if filter_type=='today' %}active-filter{% endif %}">
+Today
+</a>
+
+<a href="/admin/orders?filter=yesterday"
+class="{% if filter_type=='yesterday' %}active-filter{% endif %}">
+Yesterday
+</a>
+
+<a href="/admin/orders?filter=week"
+class="{% if filter_type=='week' %}active-filter{% endif %}">
+This Week
+</a>
+
+<a href="/admin/orders?filter=month"
+class="{% if filter_type=='month' %}active-filter{% endif %}">
+This Month
+</a>
+
+<a href="/admin/orders"
+class="{% if filter_type=='all' %}active-filter{% endif %}">
+All Orders
+</a>
+
+</div>
+
     <table>
         <thead>
             <tr>

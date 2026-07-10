@@ -346,3 +346,31 @@ button{
     text-decoration:none;
     font-weight:bold;
 }
+
+/* order filters */
+
+.order-filters{
+    display:flex;
+    gap:12px;
+    margin:20px 0;
+    flex-wrap:wrap;
+}
+
+.order-filters a{
+    text-decoration:none;
+    padding:10px 18px;
+    background:#f3f3f3;
+    border-radius:8px;
+    color:#333;
+    font-weight:bold;
+}
+
+.order-filters a:hover{
+    background:#ff9800;
+    color:white;
+}
+
+.active-filter{
+    background:#ff5722 !important;
+    color:white !important;
+}

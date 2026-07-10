@@ -8,7 +8,7 @@ import hashlib
 import razorpay
 import random
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from werkzeug.utils import secure_filename
 from flask_mail import Mail, Message
@@ -1557,13 +1557,50 @@ def admin_users():
 
 
 # ADMIN ORDERS
+
 @app.route('/admin/orders')
 def admin_orders():
 
+    filter_type = request.args.get("filter", "all")
+
     cur = mysql.connection.cursor()
+
+    # ---------------- TODAY STATS ----------------
 
     cur.execute("""
     SELECT
+        COUNT(*),
+        IFNULL(SUM(total_amount),0)
+    FROM orders
+    WHERE DATE(created_at)=CURDATE()
+    """)
+
+    today = cur.fetchone()
+
+    today_orders = today[0]
+    today_sales = today[1]
+
+    # ---------------- YESTERDAY STATS ----------------
+
+    cur.execute("""
+    SELECT
+        COUNT(*),
+        IFNULL(SUM(total_amount),0)
+    FROM orders
+    WHERE DATE(created_at)=CURDATE()-INTERVAL 1 DAY
+    """)
+
+    yesterday = cur.fetchone()
+
+    yesterday_orders = yesterday[0]
+    yesterday_sales = yesterday[1]
+
+    # ---------------- FILTER QUERY ----------------
+
+    query = """
+
+    SELECT
+
         o.id,
         o.user_id,
         o.total_amount,
@@ -1581,18 +1618,63 @@ def admin_orders():
     FROM orders o
 
     LEFT JOIN order_items oi
+
     ON o.id = oi.order_id
 
-    ORDER BY o.id DESC
-    """)
+    """
+
+        # ---------------- FILTERS ----------------
+
+    if filter_type == "today":
+
+        query += """
+        WHERE DATE(o.created_at)=CURDATE()
+        """
+
+    elif filter_type == "yesterday":
+
+        query += """
+        WHERE DATE(o.created_at)=CURDATE()-INTERVAL 1 DAY
+        """
+
+    elif filter_type == "week":
+
+        query += """
+        WHERE YEARWEEK(o.created_at,1)=YEARWEEK(CURDATE(),1)
+        """
+
+    elif filter_type == "month":
+
+        query += """
+        WHERE MONTH(o.created_at)=MONTH(CURDATE())
+        AND YEAR(o.created_at)=YEAR(CURDATE())
+        """
+
+    # Latest Orders First
+    query += """
+    ORDER BY o.created_at DESC
+    """
+
+    cur.execute(query)
 
     orders = cur.fetchall()
 
     cur.close()
 
     return render_template(
-        'admin/orders.html',
-        orders=orders
+
+        "admin/orders.html",
+
+        orders=orders,
+
+        today_orders=today_orders,
+        today_sales=today_sales,
+
+        yesterday_orders=yesterday_orders,
+        yesterday_sales=yesterday_sales,
+
+        filter_type=filter_type
+
     )
 
 # upadate order
