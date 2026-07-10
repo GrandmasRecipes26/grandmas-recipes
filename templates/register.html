@@ -4,40 +4,125 @@
 
 <div class="auth-container">
 
-<div class="auth-card">
+    <div class="auth-card">
 
-<h2>📝 Create Account</h2>
+        <h2>📝 Create Account</h2>
 
-<form method="POST">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-<input type="text"
-name="fullname"
-placeholder="Full Name"
-required>
+        <form method="POST">
 
-<input type="email"
-name="email"
-placeholder="Email"
-required>
+            <input type="text"
+                   name="fullname"
+                   placeholder="Full Name"
+                   required>
 
-<input type="text"
-name="phone"
-placeholder="Phone Number"
-required>
+            <input type="email"
+                   name="email"
+                   placeholder="Email Address"
+                   required>
 
-<input type="password"
-name="password"
-placeholder="Password"
-required>
+            <input type="tel"
+                   name="phone"
+                   id="phone"
+                   placeholder="Phone Number"
+                   maxlength="10"
+                   pattern="[0-9]{10}"
+                   required>
 
-<button type="submit">
-Register
-</button>
+            <div class="password-box">
+                <input type="password"
+                       name="password"
+                       id="password"
+                       placeholder="Password"
+                       required>
 
-</form>
+                <span onclick="togglePassword('password')">👁</span>
+            </div>
+
+            <small id="strength"></small>
+
+            <div class="password-box">
+                <input type="password"
+                       name="confirm_password"
+                       id="confirm_password"
+                       placeholder="Confirm Password"
+                       required>
+
+                <span onclick="togglePassword('confirm_password')">👁</span>
+            </div>
+
+            <small id="match"></small>
+
+            <button type="submit">
+                Register
+            </button>
+
+        </form>
+
+    </div>
 
 </div>
 
-</div>
+<script>
+
+function togglePassword(id){
+    let x=document.getElementById(id);
+
+    if(x.type==="password"){
+        x.type="text";
+    }else{
+        x.type="password";
+    }
+}
+
+let password=document.getElementById("password");
+let confirm=document.getElementById("confirm_password");
+
+password.addEventListener("keyup",function(){
+
+    let value=password.value;
+
+    if(value.length<6){
+        strength.innerHTML="🔴 Weak Password";
+        strength.style.color="red";
+    }
+    else if(value.length<10){
+        strength.innerHTML="🟠 Medium Password";
+        strength.style.color="orange";
+    }
+    else{
+        strength.innerHTML="🟢 Strong Password";
+        strength.style.color="green";
+    }
+
+});
+
+confirm.addEventListener("keyup",function(){
+
+    if(confirm.value==""){
+        match.innerHTML="";
+        return;
+    }
+
+    if(password.value===confirm.value){
+        match.innerHTML="✅ Passwords Match";
+        match.style.color="green";
+    }else{
+        match.innerHTML="❌ Passwords Don't Match";
+        match.style.color="red";
+    }
+
+});
+
+</script>
 
 {% endblock %}

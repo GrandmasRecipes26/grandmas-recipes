@@ -134,41 +134,63 @@ def home():
     )
 
 # REGISTER
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 
+    # Already logged in user
+    if 'user_id' in session:
+        return redirect('/home')
+
     if request.method == 'POST':
 
-        fullname = request.form['fullname']
-        email = request.form['email']
-        phone = request.form['phone']
+        fullname = request.form['fullname'].strip()
+        email = request.form['email'].strip().lower()
+        phone = request.form['phone'].strip()
         password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        # Password Match
+        if password != confirm_password:
+            flash("Passwords do not match!")
+            return redirect('/register')
 
         cur = mysql.connection.cursor()
 
-        # Check if email already exists
+        # Check Email
         cur.execute("SELECT * FROM users WHERE email=%s", (email,))
-        existing = cur.fetchone()
+        existing_user = cur.fetchone()
 
-        if existing:
-            flash("Email already registered! Please Login.")
+        if existing_user:
             cur.close()
+            flash("Email already registered! Please Login.")
             return redirect('/register')
 
+        # Insert User
         cur.execute("""
-        INSERT INTO users
-        (fullname,email,phone,password)
-        VALUES (%s,%s,%s,%s)
+            INSERT INTO users
+            (fullname, email, phone, password)
+            VALUES (%s, %s, %s, %s)
         """, (fullname, email, phone, password))
 
         mysql.connection.commit()
+
+        # Get newly created user
+        cur.execute("SELECT * FROM users WHERE email=%s", (email,))
+        user = cur.fetchone()
+
         cur.close()
 
-        flash("Registration Successful")
-        return redirect('/login')
+        # Auto Login
+        session.permanent = True
+        session['user_id'] = user[0]
+        session['user_name'] = user[1]
+
+        flash(f"Welcome {user[1]}! 🎉")
+
+        return redirect('/home')
 
     return render_template('register.html')
-
 
 # LOGIN
 
