@@ -146,17 +146,25 @@ def register():
 
         cur = mysql.connection.cursor()
 
+        # Check if email already exists
+        cur.execute("SELECT * FROM users WHERE email=%s", (email,))
+        existing = cur.fetchone()
+
+        if existing:
+            flash("Email already registered! Please Login.")
+            cur.close()
+            return redirect('/register')
+
         cur.execute("""
         INSERT INTO users
         (fullname,email,phone,password)
         VALUES (%s,%s,%s,%s)
-        """,(fullname,email,phone,password))
+        """, (fullname, email, phone, password))
 
         mysql.connection.commit()
         cur.close()
 
         flash("Registration Successful")
-
         return redirect('/login')
 
     return render_template('register.html')
