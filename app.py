@@ -6,9 +6,10 @@ import threading
 import hmac
 import hashlib
 import razorpay
-import datetime
 import random
 import os
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from werkzeug.utils import secure_filename
 from flask_mail import Mail, Message
 
@@ -884,6 +885,7 @@ def place_order():
             delivery_charge = 0
 
     grand_total = total + delivery_charge
+    india_time = datetime.now(ZoneInfo("Asia/Kolkata"))
 
 # CREATE SINGLE ORDER
 
@@ -901,11 +903,12 @@ def place_order():
         payment_status,
         delivery_charge
     )
-    VALUES (%s,%s,%s,NOW(),%s,%s,%s,%s,%s,%s)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """,(
         session['user_id'],
         grand_total,
         'Placed',
+        india_time,
         full_address,
         phone,
         customer_name,
