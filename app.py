@@ -87,48 +87,96 @@ def home():
 
     cur = mysql.connection.cursor()
 
-    # Products Filter
+    # ==========================
+    # DEBUG
+    # ==========================
+    cur.execute("SELECT DATABASE()")
+    print("DATABASE =", cur.fetchone())
+
+    cur.execute("SHOW TABLES")
+    print("TABLES =", cur.fetchall())
+
+    cur.execute("SHOW COLUMNS FROM products")
+    print("PRODUCTS COLUMNS =")
+    for col in cur.fetchall():
+        print(col)
+
+    # ==========================
+    # PRODUCTS
+    # ==========================
+
     if category:
 
         cur.execute("""
-        SELECT * FROM products
-        WHERE category=%s
-        """,(category,))
+            SELECT
+                id,
+                name,
+                description,
+                image,
+                category,
+                stock
+            FROM products
+            WHERE category=%s
+            ORDER BY id
+        """, (category,))
 
     else:
 
         cur.execute("""
-        SELECT * FROM products
+            SELECT
+                id,
+                name,
+                description,
+                image,
+                category,
+                stock
+            FROM products
+            ORDER BY id
         """)
 
     products = cur.fetchall()
 
-    # Variants
+    print("\n========== PRODUCTS ==========")
+
+    for p in products:
+        print(p)
+
+    # ==========================
+    # PRODUCT VARIANTS
+    # ==========================
+
     cur.execute("""
-    SELECT * FROM product_variants
+        SELECT
+            id,
+            product_id,
+            weight,
+            price
+        FROM product_variants
+        ORDER BY product_id,id
     """)
 
     variants = cur.fetchall()
 
-    # Wishlist 
+    # ==========================
+    # WISHLIST
+    # ==========================
+
     wishlist_ids = []
 
     if 'user_id' in session:
 
         cur.execute("""
-        SELECT product_id
-        FROM wishlist
-        WHERE user_id=%s
-        """,(session['user_id'],))
+            SELECT product_id
+            FROM wishlist
+            WHERE user_id=%s
+        """, (session['user_id'],))
 
-        wishlist = cur.fetchall()
-
-        wishlist_ids = [x[0] for x in wishlist]
+        wishlist_ids = [row[0] for row in cur.fetchall()]
 
     cur.close()
 
     return render_template(
-        'index.html',
+        "index.html",
         products=products,
         variants=variants,
         wishlist_ids=wishlist_ids
@@ -903,7 +951,7 @@ def place_order():
         payment_status,
         delivery_charge
     )
-    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """,(
         session['user_id'],
         grand_total,
@@ -946,6 +994,21 @@ def place_order():
 
             print("IMAGE =", product_image)
 
+            # check stock
+
+            cur.execute("""
+            SELECT stock
+            FROM products
+            WHERE id=%s
+            """,(product_id,))
+
+            stock = cur.fetchone()[0]
+
+            if stock < quantity:
+                flash("Sorry! Product is Out of Stock.")
+
+                return redirect('/home')
+
             cur.execute("""
             SELECT price
             FROM product_variants
@@ -987,6 +1050,13 @@ def place_order():
                 product_name,
                 product_image
             ))
+
+            # Reduce Stock
+            cur.execute("""
+            UPDATE products
+            SET stock = stock - %s
+            WHERE id=%s
+            """, (quantity, product_id))
             print("ORDER ITEM INSERTED")
             
 
@@ -1322,15 +1392,32 @@ def admin_login():
 @app.route('/admin/products')
 def admin_products():
 
-    if 'admin_id' not in session:
-        return redirect('/admin/login')
-
     cur = mysql.connection.cursor()
 
     cur.execute("""
-    SELECT *
-    FROM products
-    ORDER BY id DESC
+    SELECT
+        p.id,
+        p.name,
+        p.description,
+        p.image,
+        p.category,
+        MIN(v.price) AS price,
+        p.stock
+
+    FROM products p
+
+    LEFT JOIN product_variants v
+    ON p.id = v.product_id
+
+    GROUP BY
+        p.id,
+        p.name,
+        p.description,
+        p.image,
+        p.category,
+        p.stock
+
+    ORDER BY p.id DESC
     """)
 
     products = cur.fetchall()
@@ -1338,7 +1425,7 @@ def admin_products():
     cur.close()
 
     return render_template(
-        'admin_products.html',
+        "admin/products.html",
         products=products
     )
 
@@ -1529,6 +1616,29 @@ def delete_product(id):
 
     mysql.connection.commit()
     cur.close()
+
+    return redirect('/admin/products')
+
+# stock
+
+@app.route('/admin/update_stock/<int:product_id>', methods=['POST'])
+def update_stock(product_id):
+
+    stock = request.form['stock']
+
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+    UPDATE products
+    SET stock=%s
+    WHERE id=%s
+    """, (stock, product_id))
+
+    mysql.connection.commit()
+
+    cur.close()
+
+    flash("Stock Updated Successfully")
 
     return redirect('/admin/products')
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <title>Products</title>
@@ -9,13 +10,16 @@ href="{{ url_for('static',
 filename='css/admin.css') }}">
 
 </head>
+
 <body>
 
 <div class="admin-navbar">
 
 <h2>Products</h2>
 
-<a href="/admin/dashboard">Dashboard</a>
+<a href="/admin/dashboard">
+Dashboard
+</a>
 
 </div>
 
@@ -30,6 +34,9 @@ filename='css/admin.css') }}">
 <th>Name</th>
 <th>Category</th>
 <th>Price</th>
+<th>Stock</th>
+<th>Status</th>
+<th>Update Stock</th>
 
 </tr>
 
@@ -44,7 +51,8 @@ filename='css/admin.css') }}">
 <img
 src="{{ url_for('static',
 filename='images/' + product[3]) }}"
-class="product-img">
+class="product-img"
+width="80">
 
 </td>
 
@@ -52,7 +60,64 @@ class="product-img">
 
 <td>{{ product[4] }}</td>
 
-<td>₹{{ product[5] }}</td>
+<td>
+
+₹{{ product[5] }}
+
+</td>
+
+<td>
+
+{{ product[6] }}
+
+</td>
+
+<td>
+
+{% if product[6] > 0 %}
+
+<span
+style="color:green;font-weight:bold;">
+
+✅ In Stock
+
+</span>
+
+{% else %}
+
+<span
+style="color:red;font-weight:bold;">
+
+❌ Out Of Stock
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+<form
+action="/admin/update_stock/{{ product[0] }}"
+method="POST">
+
+<input
+type="number"
+name="stock"
+value="{{ product[6] }}"
+min="0"
+required>
+
+<button type="submit">
+
+Update
+
+</button>
+
+</form>
+
+</td>
 
 </tr>
 
@@ -63,4 +128,5 @@ class="product-img">
 </div>
 
 </body>
+
 </html>

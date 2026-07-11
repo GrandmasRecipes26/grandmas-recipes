@@ -151,6 +151,9 @@
                        value="1"
                        min="1"
                        required>
+  
+                {% if p[5] > 0 %}
+
 
                 <!-- ADD TO CART -->
                 <button type="submit"
@@ -171,6 +174,18 @@
                     ⚡ Buy Now
 
                 </button>
+
+                {% else %}
+
+<button
+class="out-stock-btn"
+disabled>
+
+❌ Out Of Stock
+
+</button>
+
+{% endif %}
 
             </form>
 
