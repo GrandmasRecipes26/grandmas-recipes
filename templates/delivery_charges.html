@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Delivery Charges</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin.css') }}">
+
+</head>
+
+<body>
+
+<div class="admin-menu">
+
+    <a href="/admin/dashboard">Dashboard</a>
+
+    <a href="/admin/products">Products</a>
+
+    <a href="/admin/delivery_charges">Delivery Charges</a>
+
+    <a href="/admin/users">Users</a>
+
+    <a href="/admin/orders">Orders</a>
+
+    <a href="/admin/logout">Logout</a>
+
+</div>
+
+<div class="admin-navbar">
+
+    <h2>Delivery Charges</h2>
+
+</div>
+
+<div class="admin-container">
+
+    <br>
+
+    <a href="/admin/add_delivery_charge">
+
+        <button class="save-btn">
+
+            + Add Delivery Charge
+
+        </button>
+
+    </a>
+
+    <br><br>
+
+    <table class="orders-table">
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>State</th>
+
+            <th>City</th>
+
+            <th>Charge</th>
+
+            <th>Action</th>
+
+        </tr>
+
+        {% for c in charges %}
+
+        <tr>
+
+            <td>{{ c[0] }}</td>
+
+            <td>{{ c[1] }}</td>
+
+            <td>{{ c[2] }}</td>
+
+            <td>
+
+                {% if c[3]==0 %}
+
+                    FREE
+
+                {% else %}
+
+                    ₹{{ c[3] }}
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <a href="/admin/edit_delivery_charge/{{ c[0] }}">
+
+                    Edit
+
+                </a>
+
+                |
+
+                <a href="/admin/delete_delivery_charge/{{ c[0] }}">
+
+                    Delete
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</body>
+
+</html>

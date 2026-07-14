@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Edit Delivery Charge</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/admin.css') }}">
+
+</head>
+
+<body>
+
+<div class="admin-navbar">
+
+<h2>Edit Delivery Charge</h2>
+
+<a href="/admin/delivery_charges">Back</a>
+
+</div>
+
+<div class="admin-container">
+
+<div class="form-card">
+
+<form method="POST">
+
+<label>State</label>
+
+<input
+type="text"
+name="state"
+value="{{ charge[1] }}"
+required>
+
+<label>City</label>
+
+<input
+type="text"
+name="city"
+value="{{ charge[2] }}"
+required>
+
+<label>Delivery Charge (₹)</label>
+
+<input
+type="number"
+name="charge"
+value="{{ charge[3] }}"
+min="0"
+required>
+
+<button
+class="save-btn"
+type="submit">
+
+Update Delivery Charge
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

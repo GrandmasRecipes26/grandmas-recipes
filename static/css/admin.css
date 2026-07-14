@@ -374,3 +374,68 @@ button{
     background:#ff5722 !important;
     color:white !important;
 }
+
+
+/* Delivery Charges Form */
+
+.form-card{
+
+    width:450px;
+
+    margin:auto;
+
+    background:#fff;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+
+}
+
+.form-card label{
+
+    display:block;
+
+    margin-top:15px;
+
+    font-weight:bold;
+
+    color:#333;
+
+}
+
+.form-card input{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-top:6px;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    font-size:15px;
+
+    box-sizing:border-box;
+
+}
+
+.form-card input:focus{
+
+    border-color:#ff6b35;
+
+    outline:none;
+
+}
+
+.form-card button{
+
+    width:100%;
+
+    margin-top:25px;
+
+}

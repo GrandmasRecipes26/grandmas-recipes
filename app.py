@@ -796,17 +796,66 @@ def payment():
         for item in items:
             total += float(item[1]) * int(item[0])
 
-    city = str(user[3]).lower()
-    city = city.replace(".", "").replace(" ", "")
-    print("CITY =", city)
+    # CUSTOMER CITY & STATE
 
-    # FREE DELIVERY
-    if city in ['jangareddygudem', 'jangareddigudem']:
-        delivery_charge = 0
-        free_delivery = True
+    city = user[3].strip()
+    state = user[4].strip()
+
+    city = city.replace(".", "").strip().lower()
+    state = state.strip().lower()
+
+    print("CITY =", city)
+    print("STATE =", state)
+
+# CHECK EXACT CITY
+
+    cur.execute("""
+        SELECT charge
+        FROM delivery_charges
+        WHERE LOWER(city)=%s
+        AND LOWER(state)=%s
+        """,(city,state))
+
+    delivery = cur.fetchone()
+
+    if delivery:
+        delivery_charge = float(delivery[0])
+
     else:
-        delivery_charge = 50
-        free_delivery = False
+        
+        cur.execute("""
+            SELECT charge
+            FROM delivery_charges
+            WHERE LOWER(city)='default'
+            AND LOWER(state)=%s
+            """,(state,))
+
+        default_state = cur.fetchone()
+
+        if default_state:
+            
+            delivery_charge = float(default_state[0])
+
+        else:
+            
+            cur.execute("""
+                SELECT charge
+                FROM delivery_charges
+                WHERE LOWER(city)='default'
+                AND LOWER(state)='india'
+                """)
+
+            india_default = cur.fetchone()
+
+            if india_default:
+                
+                delivery_charge = float(india_default[0])
+
+            else:
+                
+                delivery_charge = 150
+                
+    free_delivery = delivery_charge == 0
 
     grand_total = total + delivery_charge
 
@@ -910,27 +959,63 @@ def place_order():
 
             total += (price * quantity)
             
-            city = user[2].strip().lower()
-            city = city.replace(".", "").replace(" ", "")
+            city = user[3].strip()
+            state = user[4].strip()
+
+            city = city.replace(".", "").strip().lower()
+            state = state.strip().lower()
+
             print("CITY =", city)
+            print("STATE =", state)
 
-# FREE DELIVERY AREA
+# CHECK EXACT CITY
 
-    if city in ['jangareddygudem', 'jangareddigudem']:
-        delivery_charge = 0
-        free_delivery = True
+        cur.execute("""
+            SELECT charge
+            FROM delivery_charges
+            WHERE LOWER(city)=%s
+            AND LOWER(state)=%s
+            """,(city,state))
 
-    else:
-        free_delivery = False
+        delivery = cur.fetchone()
 
-        if total < 500:
-            delivery_charge = 50
-
-        elif total < 1000:
-            delivery_charge = 30
+        if delivery:
+            
+            delivery_charge = float(delivery[0])
 
         else:
-            delivery_charge = 0
+            
+            cur.execute("""
+                SELECT charge
+                FROM delivery_charges
+                WHERE LOWER(city)='default'
+                AND LOWER(state)=%s
+                """,(state,))
+
+            default_state = cur.fetchone()
+
+            if default_state:
+                
+                delivery_charge = float(default_state[0])
+
+            else:
+                
+                cur.execute("""
+                    SELECT charge
+                    FROM delivery_charges
+                    WHERE LOWER(city)='default'
+                    AND LOWER(state)='india'
+                    """)
+
+                india_default = cur.fetchone()
+
+                if india_default:
+                    
+                    delivery_charge = float(india_default[0])
+
+                else:
+                    
+                    delivery_charge = 150
 
     grand_total = total + delivery_charge
     india_time = datetime.now(ZoneInfo("Asia/Kolkata"))
@@ -1618,6 +1703,126 @@ def delete_product(id):
     cur.close()
 
     return redirect('/admin/products')
+
+# delivary charges
+
+@app.route('/admin/delivery_charges')
+def delivery_charges():
+
+    if 'admin_id' not in session:
+        return redirect('/admin/login')
+
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+        SELECT *
+        FROM delivery_charges
+        ORDER BY state, city
+    """)
+
+    charges = cur.fetchall()
+
+    cur.close()
+
+    return render_template(
+        'delivery_charges.html',
+        charges=charges
+    )
+
+# add delivery
+
+@app.route('/admin/add_delivery_charge', methods=['GET', 'POST'])
+def add_delivery_charge():
+
+    if 'admin_id' not in session:
+        return redirect('/admin/login')
+
+    if request.method == 'POST':
+
+        state = request.form['state']
+        city = request.form['city']
+        charge = request.form['charge']
+
+        cur = mysql.connection.cursor()
+
+        cur.execute("""
+            INSERT INTO delivery_charges
+            (state, city, charge)
+            VALUES(%s,%s,%s)
+        """, (state, city, charge))
+
+        mysql.connection.commit()
+
+        cur.close()
+
+        return redirect('/admin/delivery_charges')
+
+    return render_template('add_delivery_charge.html')
+
+# edit
+
+@app.route('/admin/edit_delivery_charge/<int:id>', methods=['GET', 'POST'])
+def edit_delivery_charge(id):
+
+    if 'admin_id' not in session:
+        return redirect('/admin/login')
+
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+
+        state = request.form['state']
+        city = request.form['city']
+        charge = request.form['charge']
+
+        cur.execute("""
+        UPDATE delivery_charges
+        SET
+            state=%s,
+            city=%s,
+            charge=%s
+        WHERE id=%s
+        """, (state, city, charge, id))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return redirect('/admin/delivery_charges')
+
+    cur.execute("""
+    SELECT *
+    FROM delivery_charges
+    WHERE id=%s
+    """, (id,))
+
+    charge = cur.fetchone()
+
+    cur.close()
+
+    return render_template(
+        'edit_delivery_charge.html',
+        charge=charge
+    )
+
+# delete
+
+@app.route('/admin/delete_delivery_charge/<int:id>')
+def delete_delivery_charge(id):
+
+    if 'admin_id' not in session:
+        return redirect('/admin/login')
+
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+    DELETE FROM delivery_charges
+    WHERE id=%s
+    """, (id,))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect('/admin/delivery_charges')
 
 # stock
 
