@@ -1536,11 +1536,13 @@ def add_product():
 
             filename = secure_filename(image_file.filename)
 
+            upload_folder = os.path.join(app.root_path, "static", "images")
+
+            os.makedirs(upload_folder, exist_ok=True)
+
+
             image_file.save(
-                os.path.join(
-                    "static/images",
-                    filename
-                )
+                os.path.join(upload_folder, filename)   
             )
 
         cur = mysql.connection.cursor()
@@ -1598,11 +1600,12 @@ def edit_product(id):
 
             filename = secure_filename(image_file.filename)
 
+            upload_folder = os.path.join(app.root_path, "static", "images")
+
+            os.makedirs(upload_folder, exist_ok=True)
+
             image_file.save(
-                os.path.join(
-                    "static/images",
-                    filename
-                )
+                os.path.join(upload_folder, filename)
             )
 
             cur.execute("""
