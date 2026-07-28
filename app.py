@@ -12,6 +12,9 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from werkzeug.utils import secure_filename
 from flask_mail import Mail, Message
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "grandmas_recipes"
@@ -42,11 +45,12 @@ razorpay_client = razorpay.Client(
 
 app.config['SESSION_PERMANENT'] = True
 
-app.config['MYSQL_HOST'] = 'mainline.proxy.rlwy.net'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'tqMSxumfFaZLERMWgQUjRdlziQQmuyrK'
-app.config['MYSQL_PORT'] = 26574
-app.config['MYSQL_DB'] = 'grandmas_recipes'
+
+app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
+app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
+app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT'))
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 
 # PROFILE IMAGE UPLOAD
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
