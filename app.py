@@ -768,6 +768,11 @@ def payment():
     print("SESSION USER ID =", session.get("user_id"))
     print("USER =", user)
 
+    if user is None:
+        flash("Please login again")
+        return redirect("/login")
+
+
     address_missing = False
     
     if not user[2] or not user[3] or not user[5]:
