@@ -765,6 +765,9 @@ def payment():
 
     user = cur.fetchone()
 
+    print("SESSION USER ID =", session.get("user_id"))
+    print("USER =", user)
+
     address_missing = False
     
     if not user[2] or not user[3] or not user[5]:
