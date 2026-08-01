@@ -863,7 +863,7 @@ def payment():
                 
                 delivery_charge = float(india_default[0])
 
-            else:
+
                 
                 delivery_charge = 150
                 
